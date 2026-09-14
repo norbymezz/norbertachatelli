@@ -21,13 +21,15 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 .board-edge{fill:#221b16;stroke:#b88d57;stroke-width:5}
 .label{fill:#cbd7e4;font-size:15px;font-weight:700;text-anchor:middle}
 .shadow{fill:#05080d;opacity:.35}
-.dark-piece .body{fill:var(--dark);stroke:#79d8ff}
-.light-piece .body{fill:var(--light);stroke:#fff}
-.piece .body{stroke-width:3;stroke-linejoin:round}
-.piece .mane{fill:none;stroke-width:3;stroke-linecap:round}
-.dark-piece .mane{stroke:#79d8ff}.light-piece .mane{stroke:#9d8c71}
-.dark-piece .eye{fill:#fff}.light-piece .eye{fill:#17202b}
-.piece .nostril{fill:#17202b}
+.piece{color:#f7f1e3}
+.dark-piece{color:#151a24;filter:drop-shadow(0 0 1.6px #79d8ff)}
+.light-piece{color:#fff8e8;filter:drop-shadow(0 0 1.6px #263446)}
+.piece .horse-line{fill:none;stroke:currentColor;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.piece .horse-detail{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}
+.piece .horse-node{fill:currentColor;stroke:#79d8ff;stroke-width:1.6}
+.light-piece .horse-node{stroke:#8c7658}
+.piece .eye{fill:#ffd166;stroke:#17202b;stroke-width:1}
+.piece .nostril{fill:#79d8ff}
 .route-dark,.route-light{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:7 8;opacity:.55}
 .route-dark{stroke:#66d3ff}.route-light{stroke:#fff0be}
 </style>
@@ -51,13 +53,23 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <polyline id="lightRoute2" class="route-light"/>
 <defs>
   <g id="knightProfile">
-    <ellipse class="shadow" cx="0" cy="15" rx="34" ry="9"/>
-    <path class="body" d="M-35 14 Q-36 7-28 3 L-20-1 Q-13-11-17-25 Q-20-38-12-52 L-18-70 L-1-61 L10-77 L17-57 Q29-51 37-39 L45-29 Q48-23 42-18 L28-11 Q24-7 29-1 L36 4 Q40 8 36 14 Z"/>
-    <path class="mane" d="M-14-51 Q-28-35-20-12 Q-18-5-25 1"/>
-    <path class="mane" d="M-29 4 H31"/>
-    <circle class="eye" cx="13" cy="-48" r="3.5"/>
-    <ellipse class="nostril" cx="36" cy="-25" rx="3.5" ry="2.3"/>
-    <path d="M25-13 Q34-16 41-20" fill="none" stroke="#6b5848" stroke-width="2" stroke-linecap="round"/>
+    <ellipse class="shadow" cx="0" cy="16" rx="36" ry="9"/>
+    <path class="horse-line" d="M-31 12 H34 M-26 10 Q-13 0-18-25 Q-22-42-10-57 L-14-73 L1-62 L11-77 L17-57 Q29-51 40-36 L49-28 L43-20 L29-15 Q19-8 27 3 L33 12"/>
+    <path class="horse-detail" d="M-11-55 Q-28-42-18-25 M29-15 Q37-17 43-20"/>
+    <circle class="horse-node" cx="-31" cy="12" r="4"/>
+    <circle class="horse-node" cx="-18" cy="-25" r="4"/>
+    <circle class="horse-node" cx="-10" cy="-57" r="4"/>
+    <circle class="horse-node" cx="1" cy="-62" r="4"/>
+    <circle class="horse-node" cx="11" cy="-77" r="4"/>
+    <circle class="horse-node" cx="17" cy="-57" r="4"/>
+    <circle class="horse-node" cx="40" cy="-36" r="4"/>
+    <circle class="horse-node" cx="49" cy="-28" r="4"/>
+    <circle class="horse-node" cx="43" cy="-20" r="4"/>
+    <circle class="horse-node" cx="29" cy="-15" r="4"/>
+    <circle class="horse-node" cx="27" cy="3" r="4"/>
+    <circle class="horse-node" cx="34" cy="12" r="4"/>
+    <circle class="eye" cx="16" cy="-48" r="3.6"/>
+    <circle class="nostril" cx="42" cy="-27" r="2.5"/>
   </g>
 </defs>
 <g id="darkKnight" class="piece dark-piece"><use href="#knightProfile"/></g>
