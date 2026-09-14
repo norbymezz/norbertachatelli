@@ -27,7 +27,7 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Pies centrados en cada casillero · escala conectada a la perspectiva</span>
+<span class="note">Rebote especular en los bordes · corrección interna en el quinto pulso</span>
 <output id="turnLabel">Turno blancas</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
@@ -101,8 +101,12 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <script>
 const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
 const corners={backLeft:[330,90],backRight:[630,90],frontLeft:[70,500],frontRight:[890,500]};
-const lightPath=["B1","D2","F3","H4","F5","D6","B7"],darkPath=["B8","D7","F6","H5","F4","D3","B2"];
-const lightPath2=["G1","H3","G5","H7","F8"],darkPath2=["G8","H6","G4","H2","F1"];
+const pieces=[
+ {id:"lightFace",start:[1,0],velocity:[2,1],beat:1},
+ {id:"darkFace",start:[1,7],velocity:[2,-1],beat:2},
+ {id:"lightFace2",start:[6,0],velocity:[1,2],beat:3},
+ {id:"darkFace2",start:[6,7],velocity:[1,-2],beat:4}
+];
 const state={running:true,origin:performance.now(),pausedAt:0,tickDuration:.8,moveDuration:.55};
 function mix(a,b,t){return a+(b-a)*t}function surfacePoint(u,v){const left=[mix(corners.backLeft[0],corners.frontLeft[0],v),mix(corners.backLeft[1],corners.frontLeft[1],v)],right=[mix(corners.backRight[0],corners.frontRight[0],v),mix(corners.backRight[1],corners.frontRight[1],v)];return[mix(left[0],right[0],u),mix(left[1],right[1],u)]}
 function cellPoint(name){const col=name.charCodeAt(0)-65,row=Number(name.slice(1))-1;return surfacePoint((col+.5)/8,1-(row+.5)/8)}
@@ -111,17 +115,38 @@ function drawBoard(){const board=$("board");add("polygon",{class:"board-edge",po
 for(let row=0;row<8;row++)for(let col=0;col<8;col++){const u0=col/8,u1=(col+1)/8,v0=row/8,v1=(row+1)/8,points=[surfacePoint(u0,v0),surfacePoint(u1,v0),surfacePoint(u1,v1),surfacePoint(u0,v1)];add("polygon",{points:points.map(p=>p.join(",")).join(" "),fill:(row+col)%2?"#b6895c":"#ead8b9",stroke:"#614a35","stroke-width":".7"},board)}
 for(let col=0;col<8;col++){const p=surfacePoint((col+.5)/8,1.035),t=add("text",{x:p[0],y:p[1]+17,class:"label"},board);t.textContent=String.fromCharCode(65+col)}
 for(let row=0;row<8;row++){const p=surfacePoint(-.035,1-(row+.5)/8),t=add("text",{x:p[0]-8,y:p[1]+5,class:"label"},board);t.textContent=row+1}
-[["darkRoute",darkPath],["darkRoute2",darkPath2],["lightRoute",lightPath],["lightRoute2",lightPath2]].forEach(([id,path])=>$(id).setAttribute("points",path.map(cellPoint).map(p=>p.join(",")).join(" ")))}
+const routeIds=["lightRoute","darkRoute","lightRoute2","darkRoute2"];
+routeIds.forEach((id,pieceIndex)=>{const points=[];for(let i=0;i<Math.min(100,timeline.length);i++){const cell=timeline[i].positions[pieceIndex],point=gridPoint(cell);const key=point.join(",");if(points.at(-1)!==key)points.push(key)}$(id).setAttribute("points",points.join(" "))})}
 function smooth(t){return t*t*(3-2*t)}function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function pingPongPoint(path,index){const span=path.length-1,phase=((index%(span*2))+(span*2))%(span*2);return cellPoint(path[phase<=span?phase:span*2-phase])}
-function clockDrivenPosition(path,t,eventBeat){const d=state.tickDuration,firstStart=(eventBeat-1)*d;if(t<firstStart){const[x,y]=pingPongPoint(path,0);return{x,y}}const eventIndex=Math.floor((t-firstStart)/(5*d)),eventStart=firstStart+eventIndex*5*d,progress=smooth(clamp((t-eventStart)/state.moveDuration,0,1)),a=pingPongPoint(path,eventIndex),b=pingPongPoint(path,eventIndex+1);return{x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)}}
-function updateClock(t){const count=Math.floor(t/state.tickDuration)%5+1;$("clockCount").value=count===5?"—":count;$("turnLabel").value=count===5?"Pausa":count%2?"Turno blancas":"Turno negras";document.querySelectorAll(".tick").forEach((node,i)=>node.classList.toggle("on",i+1===count))}
+function gridPoint(cell){return surfacePoint((cell[0]+.5)/8,1-(cell[1]+.5)/8)}
+function reflectedCoordinate(value){let result=value;while(result<0||result>7){if(result<0)result=-1-result;if(result>7)result=15-result}return result}
+function buildTimeline(length){
+ const positions=pieces.map(piece=>[...piece.start]),velocities=pieces.map(piece=>[...piece.velocity]),pending=pieces.map(()=>null);
+ const frames=[{positions:positions.map(p=>[...p]),recovery:false}];
+ for(let step=0;step<length;step++){
+  const pulse=step%5+1;let recovery=false;
+  if(pulse<5){
+   const index=pulse-1,current=positions[index],velocity=velocities[index],proposal=[current[0]+velocity[0],current[1]+velocity[1]];
+   const outsideX=proposal[0]<0||proposal[0]>7,outsideY=proposal[1]<0||proposal[1]>7;
+   if(outsideX||outsideY){
+    if(outsideX)velocity[0]*=-1;if(outsideY)velocity[1]*=-1;
+    pending[index]=[reflectedCoordinate(proposal[0]),reflectedCoordinate(proposal[1])];
+   }else positions[index]=proposal;
+  }else{
+   pending.forEach((target,index)=>{if(target){positions[index]=target;pending[index]=null;recovery=true}});
+  }
+  frames.push({positions:positions.map(p=>[...p]),recovery});
+ }
+ return frames;
+}
+const timeline=buildTimeline(6000);
+function updateClock(t,beatIndex){const count=beatIndex%5+1,recovery=count===5&&timeline[beatIndex+1].recovery;$("clockCount").value=count===5?(recovery?"↩":"—"):count;$("turnLabel").value=count===5?(recovery?"Rebote interno":"Pausa"):count%2?"Turno blancas":"Turno negras";document.querySelectorAll(".tick").forEach((node,i)=>node.classList.toggle("on",i+1===count))}
 function perspectiveScale(y){const depth=clamp((y-corners.backLeft[1])/(corners.frontLeft[1]-corners.backLeft[1]),0,1);return mix(.48,1.02,depth)}
-function render(t){updateClock(t);const light=clockDrivenPosition(lightPath,t,1),dark=clockDrivenPosition(darkPath,t,2),light2=clockDrivenPosition(lightPath2,t,3),dark2=clockDrivenPosition(darkPath2,t,4);
-[["darkFace",dark],["darkFace2",dark2],["lightFace",light],["lightFace2",light2]].forEach(([id,p])=>{const scale=perspectiveScale(p.y);$(id).setAttribute("transform",`translate(${p.x} ${p.y}) scale(${scale}) translate(0 -50)`)})}
+function render(t){const beatIndex=Math.min(Math.floor(t/state.tickDuration),timeline.length-2),beatTime=t-beatIndex*state.tickDuration,progress=smooth(clamp(beatTime/state.moveDuration,0,1));updateClock(t,beatIndex);
+ pieces.forEach((piece,index)=>{const a=gridPoint(timeline[beatIndex].positions[index]),b=gridPoint(timeline[beatIndex+1].positions[index]),p={x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)},scale=perspectiveScale(p.y);$(piece.id).setAttribute("transform",`translate(${p.x} ${p.y}) scale(${scale}) translate(0 -50)`)})}
 function frame(now){if(state.running){state.pausedAt=(now-state.origin)/1000;render(state.pausedAt)}requestAnimationFrame(frame)}
 $("toggle").onclick=()=>{state.running=!state.running;if(state.running){state.origin=performance.now()-state.pausedAt*1000;$("toggle").textContent="Pausa"}else $("toggle").textContent="Continuar"};
 $("restart").onclick=()=>{state.origin=performance.now();state.pausedAt=0;state.running=true;$("toggle").textContent="Pausa";render(0)};
-for(let i=1;i<=5;i++){const node=document.createElement("span");node.className="tick";node.textContent=i===5?"—":i;$("ticks").appendChild(node)}
+for(let i=1;i<=5;i++){const node=document.createElement("span");node.className="tick";node.textContent=i===5?"↩":i;$("ticks").appendChild(node)}
 drawBoard();render(0);requestAnimationFrame(frame);
 </script></body></html>
