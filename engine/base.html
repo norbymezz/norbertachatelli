@@ -27,7 +27,7 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Cuatro caras caricaturescas · cuerpos de palitos y articulaciones</span>
+<span class="note">Pies centrados en cada casillero · escala conectada a la perspectiva</span>
 <output id="turnLabel">Turno blancas</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
@@ -116,8 +116,9 @@ function smooth(t){return t*t*(3-2*t)}function clamp(v,a,b){return Math.max(a,Ma
 function pingPongPoint(path,index){const span=path.length-1,phase=((index%(span*2))+(span*2))%(span*2);return cellPoint(path[phase<=span?phase:span*2-phase])}
 function clockDrivenPosition(path,t,eventBeat){const d=state.tickDuration,firstStart=(eventBeat-1)*d;if(t<firstStart){const[x,y]=pingPongPoint(path,0);return{x,y}}const eventIndex=Math.floor((t-firstStart)/(5*d)),eventStart=firstStart+eventIndex*5*d,progress=smooth(clamp((t-eventStart)/state.moveDuration,0,1)),a=pingPongPoint(path,eventIndex),b=pingPongPoint(path,eventIndex+1);return{x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)}}
 function updateClock(t){const count=Math.floor(t/state.tickDuration)%5+1;$("clockCount").value=count===5?"—":count;$("turnLabel").value=count===5?"Pausa":count%2?"Turno blancas":"Turno negras";document.querySelectorAll(".tick").forEach((node,i)=>node.classList.toggle("on",i+1===count))}
+function perspectiveScale(y){const depth=clamp((y-corners.backLeft[1])/(corners.frontLeft[1]-corners.backLeft[1]),0,1);return mix(.48,1.02,depth)}
 function render(t){updateClock(t);const light=clockDrivenPosition(lightPath,t,1),dark=clockDrivenPosition(darkPath,t,2),light2=clockDrivenPosition(lightPath2,t,3),dark2=clockDrivenPosition(darkPath2,t,4);
-[["darkFace",dark],["darkFace2",dark2],["lightFace",light],["lightFace2",light2]].forEach(([id,p])=>$(id).setAttribute("transform",`translate(${p.x} ${p.y})`))}
+[["darkFace",dark],["darkFace2",dark2],["lightFace",light],["lightFace2",light2]].forEach(([id,p])=>{const scale=perspectiveScale(p.y);$(id).setAttribute("transform",`translate(${p.x} ${p.y}) scale(${scale}) translate(0 -50)`)})}
 function frame(now){if(state.running){state.pausedAt=(now-state.origin)/1000;render(state.pausedAt)}requestAnimationFrame(frame)}
 $("toggle").onclick=()=>{state.running=!state.running;if(state.running){state.origin=performance.now()-state.pausedAt*1000;$("toggle").textContent="Pausa"}else $("toggle").textContent="Continuar"};
 $("restart").onclick=()=>{state.origin=performance.now();state.pausedAt=0;state.running=true;$("toggle").textContent="Pausa";render(0)};
