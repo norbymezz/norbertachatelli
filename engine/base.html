@@ -29,7 +29,7 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Turnos 1–4: B8→A6 · B1→D2 · G8→E7 · G1→H3 · pulso 5 vacío</span>
+<span class="note">Rebote externo: la dirección principal cambia en el segundo rebote del mismo eje</span>
 <output id="turnLabel">Turno negras</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
@@ -123,7 +123,7 @@ function smooth(t){return t*t*(3-2*t)}function clamp(v,a,b){return Math.max(a,Ma
 function gridPoint(cell){return surfacePoint((cell[0]+.5)/8,1-(cell[1]+.5)/8)}
 function reflectedCoordinate(value){let result=value;while(result<0||result>7){if(result<0)result=-1-result;if(result>7)result=15-result}return result}
 function buildTimeline(length){
- const positions=pieces.map(piece=>[...piece.start]),velocities=pieces.map(piece=>[...piece.velocity]);
+ const positions=pieces.map(piece=>[...piece.start]),velocities=pieces.map(piece=>[...piece.velocity]),externalBounces=pieces.map(()=>[0,0]);
  const frames=[{positions:positions.map(p=>[...p]),recovery:false,actor:null,waiting:null}];
  for(let step=0;step<length;step++){
   const pulse=step%5+1;let recovery=false,actor=null;
@@ -133,6 +133,8 @@ function buildTimeline(length){
    const stepVector=[outsideX?-velocity[0]:velocity[0],outsideY?-velocity[1]:velocity[1]];
    const target=[current[0]+stepVector[0],current[1]+stepVector[1]];
    positions[index]=target;actor=index;recovery=outsideX||outsideY;
+   if(outsideX&&++externalBounces[index][0]%2===0)velocity[0]*=-1;
+   if(outsideY&&++externalBounces[index][1]%2===0)velocity[1]*=-1;
    if(!outsideX&&(target[0]===0||target[0]===7))velocity[0]*=-1;
    if(!outsideY&&(target[1]===0||target[1]===7))velocity[1]*=-1;
   }
