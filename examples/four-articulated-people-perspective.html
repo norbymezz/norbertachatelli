@@ -29,7 +29,7 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Salto largo en zigzag: derecha, izquierda, derecha · parpadean y hablan</span>
+<span class="note">Dirección constante · sólo cambia la componente que toca una pared · parpadean y hablan</span>
 <output id="turnLabel">Turno blancas</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
@@ -106,8 +106,8 @@ const corners={backLeft:[330,90],backRight:[630,90],frontLeft:[70,500],frontRigh
 const pieces=[
  {id:"lightFace",start:[1,0],velocity:[2,1],beat:1},
  {id:"darkFace",start:[1,7],velocity:[2,-1],beat:2},
- {id:"lightFace2",start:[6,0],velocity:[1,2],beat:3,alternateSide:true},
- {id:"darkFace2",start:[6,7],velocity:[1,-2],beat:4,alternateSide:true}
+ {id:"lightFace2",start:[6,0],velocity:[1,2],beat:3},
+ {id:"darkFace2",start:[6,7],velocity:[1,-2],beat:4}
 ];
 const state={running:true,origin:performance.now(),pausedAt:0,tickDuration:.8,moveDuration:.55};
 function mix(a,b,t){return a+(b-a)*t}function surfacePoint(u,v){const left=[mix(corners.backLeft[0],corners.frontLeft[0],v),mix(corners.backLeft[1],corners.frontLeft[1],v)],right=[mix(corners.backRight[0],corners.frontRight[0],v),mix(corners.backRight[1],corners.frontRight[1],v)];return[mix(left[0],right[0],u),mix(left[1],right[1],u)]}
@@ -133,12 +133,9 @@ function buildTimeline(length){
    if(outsideX||outsideY){
     if(outsideX)velocity[0]*=-1;if(outsideY)velocity[1]*=-1;
     pending[index]={target:[reflectedCoordinate(proposal[0]),reflectedCoordinate(proposal[1])],reflectedX:outsideX};
-   }else{
-    positions[index]=proposal;
-    if(pieces[index].alternateSide)velocity[0]*=-1;
-   }
+   }else positions[index]=proposal;
   }else{
-   pending.forEach((entry,index)=>{if(entry){positions[index]=entry.target;if(pieces[index].alternateSide&&!entry.reflectedX)velocities[index][0]*=-1;pending[index]=null;recovery=true}});
+   pending.forEach((entry,index)=>{if(entry){positions[index]=entry.target;pending[index]=null;recovery=true}});
   }
   frames.push({positions:positions.map(p=>[...p]),recovery});
  }
