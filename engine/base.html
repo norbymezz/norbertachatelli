@@ -29,7 +29,7 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Dirección constante · el rebote se inserta en el pulso 5 y desplaza la cola de turnos</span>
+<span class="note">Al llegar a una casilla de borde invierte esa componente · G1 → H3 → G5</span>
 <output id="turnLabel">Turno blancas</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
@@ -131,6 +131,9 @@ function buildTimeline(length){
   if(pulse===5){
    if(pending){
     positions[pending.index]=pending.target;actor=pending.index;recovery=true;
+    const velocity=velocities[pending.index];
+    if(!pending.reflectedX&&(pending.target[0]===0||pending.target[0]===7))velocity[0]*=-1;
+    if(!pending.reflectedY&&(pending.target[1]===0||pending.target[1]===7))velocity[1]*=-1;
     nextPiece=(pending.index+1)%pieces.length;pending=null;
    }
   }else if(!pending){
@@ -138,9 +141,11 @@ function buildTimeline(length){
    const outsideX=proposal[0]<0||proposal[0]>7,outsideY=proposal[1]<0||proposal[1]>7;
    if(outsideX||outsideY){
     if(outsideX)velocity[0]*=-1;if(outsideY)velocity[1]*=-1;
-    pending={index,target:[reflectedCoordinate(proposal[0]),reflectedCoordinate(proposal[1])]};
+    pending={index,target:[reflectedCoordinate(proposal[0]),reflectedCoordinate(proposal[1])],reflectedX:outsideX,reflectedY:outsideY};
    }else{
     positions[index]=proposal;actor=index;nextPiece=(nextPiece+1)%pieces.length;
+    if(proposal[0]===0||proposal[0]===7)velocity[0]*=-1;
+    if(proposal[1]===0||proposal[1]===7)velocity[1]*=-1;
    }
   }
   frames.push({positions:positions.map(p=>[...p]),recovery,actor,waiting:pending?pending.index:null});
