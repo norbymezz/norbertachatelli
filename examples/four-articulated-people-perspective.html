@@ -29,8 +29,8 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Al llegar a una casilla de borde invierte esa componente · G1 → H3 → G5</span>
-<output id="turnLabel">Turno blancas</output>
+<span class="note">Primer recorrido: B8 → A6 → B4 → C2 → D4 → E2</span>
+<output id="turnLabel">Turno negras</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
 <svg viewBox="0 0 960 560" role="img" aria-label="Dos personas blancas y dos negras, con cuerpos articulados de palitos, recorren un tablero de ajedrez en perspectiva">
@@ -104,10 +104,10 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
 const corners={backLeft:[330,90],backRight:[630,90],frontLeft:[70,500],frontRight:[890,500]};
 const pieces=[
- {id:"lightFace",start:[1,0],velocity:[2,1],beat:1},
- {id:"darkFace",start:[1,7],velocity:[2,-1],beat:2},
- {id:"lightFace2",start:[6,0],velocity:[1,2],beat:3},
- {id:"darkFace2",start:[6,7],velocity:[1,-2],beat:4}
+ {id:"darkFace",start:[1,7],velocity:[-1,-2]},
+ {id:"lightFace",start:[1,0],velocity:[1,2]},
+ {id:"darkFace2",start:[6,7],velocity:[1,-2]},
+ {id:"lightFace2",start:[6,0],velocity:[-1,2]}
 ];
 const state={running:true,origin:performance.now(),pausedAt:0,tickDuration:.8,moveDuration:.55};
 function mix(a,b,t){return a+(b-a)*t}function surfacePoint(u,v){const left=[mix(corners.backLeft[0],corners.frontLeft[0],v),mix(corners.backLeft[1],corners.frontLeft[1],v)],right=[mix(corners.backRight[0],corners.frontRight[0],v),mix(corners.backRight[1],corners.frontRight[1],v)];return[mix(left[0],right[0],u),mix(left[1],right[1],u)]}
@@ -117,8 +117,8 @@ function drawBoard(){const board=$("board");add("polygon",{class:"board-edge",po
 for(let row=0;row<8;row++)for(let col=0;col<8;col++){const u0=col/8,u1=(col+1)/8,v0=row/8,v1=(row+1)/8,points=[surfacePoint(u0,v0),surfacePoint(u1,v0),surfacePoint(u1,v1),surfacePoint(u0,v1)];add("polygon",{points:points.map(p=>p.join(",")).join(" "),fill:(row+col)%2?"#b6895c":"#ead8b9",stroke:"#614a35","stroke-width":".7"},board)}
 for(let col=0;col<8;col++){const p=surfacePoint((col+.5)/8,1.035),t=add("text",{x:p[0],y:p[1]+17,class:"label"},board);t.textContent=String.fromCharCode(65+col)}
 for(let row=0;row<8;row++){const p=surfacePoint(-.035,1-(row+.5)/8),t=add("text",{x:p[0]-8,y:p[1]+5,class:"label"},board);t.textContent=row+1}
-const routeIds=["lightRoute","darkRoute","lightRoute2","darkRoute2"];
-routeIds.forEach((id,pieceIndex)=>{const points=[];for(let i=0;i<Math.min(100,timeline.length);i++){const cell=timeline[i].positions[pieceIndex],point=gridPoint(cell);const key=point.join(",");if(points.at(-1)!==key)points.push(key)}$(id).setAttribute("points",points.join(" "))})}
+const routeByPiece={lightFace:"lightRoute",darkFace:"darkRoute",lightFace2:"lightRoute2",darkFace2:"darkRoute2"};
+pieces.forEach((piece,pieceIndex)=>{const points=[];for(let i=0;i<Math.min(100,timeline.length);i++){const cell=timeline[i].positions[pieceIndex],point=gridPoint(cell),key=point.join(",");if(points.at(-1)!==key)points.push(key)}$(routeByPiece[piece.id]).setAttribute("points",points.join(" "))})}
 function smooth(t){return t*t*(3-2*t)}function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function gridPoint(cell){return surfacePoint((cell[0]+.5)/8,1-(cell[1]+.5)/8)}
 function reflectedCoordinate(value){let result=value;while(result<0||result>7){if(result<0)result=-1-result;if(result>7)result=15-result}return result}
@@ -141,7 +141,7 @@ function buildTimeline(length){
    const outsideX=proposal[0]<0||proposal[0]>7,outsideY=proposal[1]<0||proposal[1]>7;
    if(outsideX||outsideY){
     if(outsideX)velocity[0]*=-1;if(outsideY)velocity[1]*=-1;
-    pending={index,target:[reflectedCoordinate(proposal[0]),reflectedCoordinate(proposal[1])],reflectedX:outsideX,reflectedY:outsideY};
+    pending={index,target:[current[0]+velocity[0],current[1]+velocity[1]],reflectedX:outsideX,reflectedY:outsideY};
    }else{
     positions[index]=proposal;actor=index;nextPiece=(nextPiece+1)%pieces.length;
     if(proposal[0]===0||proposal[0]===7)velocity[0]*=-1;
