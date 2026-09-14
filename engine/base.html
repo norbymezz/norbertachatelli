@@ -2,86 +2,73 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tres rostros discutiendo — Cartoon Engine</title>
+<title>Cartoon Engine — Cuatro rostros en perspectiva</title>
 <style>
-:root{--ink:#202126;--sky:#93d8ee;--floor:#d9b78a;--skin1:#d9a06f;--skin2:#c98f68;--skin3:#b97d5b}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#17212a;font-family:system-ui,sans-serif}
-.frame{width:min(1080px,100%);overflow:hidden;border-radius:18px;box-shadow:0 18px 50px #0007;background:var(--sky)}
-svg{display:block;width:100%;height:auto}.stroke{stroke:var(--ink);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.person{transform-box:fill-box;transform-origin:center bottom;transition:transform .18s ease}
-.skin{stroke:var(--ink);stroke-width:6}.hair{fill:#303036;stroke:var(--ink);stroke-width:6}.eye{fill:#fff;stroke:var(--ink);stroke-width:5}.pupil{fill:var(--ink)}.brow,.jaw,.mouth{transform-box:fill-box;transform-origin:center;transition:transform .15s ease}
-.speaker{transform:translateY(-6px) rotate(-1deg)}.speaker .mouth{animation:talk .2s ease-in-out infinite alternate}.speaker .jaw{transform:translateY(6px)}.speaker .brow{transform:translateY(-4px) rotate(-6deg)}
-@keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(1.3)}}.sound{opacity:0;transition:opacity .12s}.speaker .sound{opacity:1;animation:signal .42s ease-in-out infinite alternate}@keyframes signal{to{opacity:.35}}
-.title{font-size:18px;font-weight:900;fill:#fff;paint-order:stroke;stroke:#202126;stroke-width:6px;letter-spacing:2px;text-anchor:middle}
-.clock{display:flex;justify-content:center;gap:9px;padding:12px 10px 4px;background:#17212a}.beat{width:13px;height:13px;border:2px solid #697488;background:#313a48;border-radius:50%}.beat.on{background:#fff;border-color:#fff;box-shadow:0 0 13px #fff9}
-.label{min-height:24px;text-align:center;padding-top:5px;color:#e9edf4;background:#17212a;font:15px system-ui,sans-serif}.controls{display:flex;justify-content:center;gap:9px;padding:11px;background:#17212a}
-button{padding:8px 15px;border:1px solid #586477;border-radius:999px;background:#283342;color:#fff;cursor:pointer}
-@media(prefers-reduced-motion:reduce){.mouth,.sound{animation:none!important}}
+:root{color-scheme:dark;--bg:#0b1018;--panel:#172131;--ink:#edf4ff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,sans-serif}
+main{min-height:100vh;display:grid;grid-template-rows:auto 1fr}header{display:flex;align-items:center;gap:.7rem;padding:.75rem 1rem;background:var(--panel);flex-wrap:wrap}
+button{border:0;border-radius:.5rem;padding:.55rem .9rem;font:inherit;cursor:pointer}.clock-panel{margin-left:auto;display:flex;align-items:center;gap:.7rem}
+#clockCount{display:grid;place-items:center;width:42px;height:42px;border:2px solid #6bd8ff;border-radius:50%;font-size:22px;font-weight:800}
+#ticks{display:flex;gap:4px}.tick{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#29384b;color:#9fb1c5;font-size:12px;font-weight:700}.tick.on{background:#ffd166;color:#17202b}
+.note{color:#b9c7d8}#turnLabel{min-width:112px;padding:.42rem .65rem;border-radius:.45rem;background:#26364a;text-align:center;font-weight:750}
+svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0 39%,#101720 39%)}.board-edge{fill:#221b16;stroke:#b88d57;stroke-width:5}
+.label{fill:#cbd7e4;font-size:15px;font-weight:700;text-anchor:middle}.shadow{fill:#05080d;opacity:.35}
+.piece{filter:drop-shadow(0 3px 3px #0008)}.face-head{stroke-width:5}.face-line{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.light-piece .face-head{fill:#fff;stroke:#171b23}.light-piece .face-line{stroke:#171b23}.light-piece .eye{fill:#171b23}
+.dark-piece .face-head{fill:#080a0e;stroke:#fff}.dark-piece .face-line{stroke:#fff}.dark-piece .eye{fill:#fff}
+.joint{stroke-width:3}.light-piece .joint{fill:#fff;stroke:#171b23}.dark-piece .joint{fill:#080a0e;stroke:#fff}
+.route-dark,.route-light{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:7 8;opacity:.55}.route-dark{stroke:#66d3ff}.route-light{stroke:#fff0be}
 </style>
 </head>
-<body><main class="frame">
-<svg viewBox="0 0 1080 620" role="img" aria-labelledby="title desc">
-<title id="title">Tres rostros desde diferentes ángulos discutiendo</title>
-<desc id="desc">Un rostro frontal, uno en medio perfil y otro casi de espaldas conversan por turnos.</desc>
-<rect width="1080" height="620" fill="#93d8ee"/><rect y="420" width="1080" height="200" fill="#d9b78a"/><path d="M0 420H1080" class="stroke" fill="none"/>
-<ellipse cx="180" cy="525" rx="120" ry="23" fill="#000" opacity=".16"/><ellipse cx="540" cy="525" rx="120" ry="23" fill="#000" opacity=".16"/><ellipse cx="900" cy="525" rx="120" ry="23" fill="#000" opacity=".16"/>
-
-<!-- FRENTE: simetría, dos ojos y nariz central -->
-<g id="front" class="person" transform="translate(180 500)">
- <text class="title" x="0" y="-420">FRENTE</text>
- <path d="M-100 0Q-92-105-80-180Q0-225 80-180Q92-105 100 0Z" fill="#405e78" class="stroke"/>
- <rect x="-19" y="-245" width="38" height="55" rx="13" fill="#d9a06f"/>
- <ellipse class="skin" cx="0" cy="-306" rx="88" ry="103" fill="#d9a06f"/>
- <path class="hair" d="M-80-337Q-64-411 5-416Q72-408 84-338Q45-366 2-363Q-42-364-80-337Z"/>
- <ellipse class="eye" cx="-35" cy="-316" rx="15" ry="18"/><ellipse class="eye" cx="35" cy="-316" rx="15" ry="18"/>
- <circle class="pupil" cx="-30" cy="-313" r="6"/><circle class="pupil" cx="40" cy="-313" r="6"/>
- <g class="brow"><path d="M-58-346l38-7M20-353l38 7" class="stroke" fill="none"/></g>
- <path d="M0-310l-12 40 14 7" class="stroke" fill="none"/>
- <g class="jaw"><path d="M-64-257Q0-217 64-257" class="stroke" fill="none"/></g>
- <ellipse class="mouth" cx="0" cy="-247" rx="30" ry="13" fill="#681f20" class="stroke"/>
- <g class="sound stroke" fill="none"><path d="M-102-268l-30 7M102-268l30 7"/></g>
-</g>
-
-<!-- MEDIO PERFIL: cara desplazada, un ojo dominante y nariz lateral -->
-<g id="threequarter" class="person" transform="translate(540 500)">
- <text class="title" x="0" y="-420">MEDIO PERFIL</text>
- <path d="M-98 0Q-91-110-75-180Q2-225 88-176Q98-92 103 0Z" fill="#5d526d" class="stroke"/>
- <rect x="-11" y="-242" width="38" height="52" rx="13" fill="#c98f68"/>
- <path class="skin" d="M-78-320Q-67-400 4-411Q72-410 91-341Q103-304 86-276L112-253L83-238Q65-203 10-201Q-58-205-79-275Q-90-298-78-320Z" fill="#c98f68"/>
- <path class="hair" d="M-76-338Q-55-411 9-417Q73-409 88-344Q43-365-2-357Q-45-350-76-338Z"/>
- <ellipse class="eye" cx="-25" cy="-311" rx="11" ry="15" opacity=".55"/><ellipse class="eye" cx="49" cy="-309" rx="16" ry="19"/>
- <circle class="pupil" cx="-21" cy="-309" r="5" opacity=".55"/><circle class="pupil" cx="55" cy="-306" r="6"/>
- <g class="brow"><path d="M24-342l46 3" class="stroke" fill="none"/></g>
- <path d="M75-302l37 49-29 15" class="stroke" fill="none"/>
- <g class="jaw"><path d="M77-236Q65-205 18-201" class="stroke" fill="none"/></g>
- <ellipse class="mouth" cx="79" cy="-222" rx="27" ry="12" fill="#681f20" class="stroke"/>
- <g class="sound stroke" fill="none"><path d="M121-238h34M120-218l37 12"/></g>
-</g>
-
-<!-- CASI DE ESPALDAS: nuca y pelo dominantes; oreja y rasgos apenas visibles -->
-<g id="backprofile" class="person" transform="translate(900 500)">
- <text class="title" x="0" y="-420">CASI DE ESPALDAS</text>
- <path d="M-98 0Q-92-105-73-177Q0-220 78-182Q94-106 101 0Z" fill="#496b58" class="stroke"/>
- <rect x="-8" y="-238" width="38" height="52" rx="13" fill="#b97d5b"/>
- <ellipse class="skin" cx="0" cy="-305" rx="91" ry="105" fill="#b97d5b"/>
- <path class="hair" d="M-87-324Q-77-397-14-414Q55-425 87-360Q103-309 72-248Q35-271 10-305Q-22-340-87-324Z"/>
- <ellipse cx="54" cy="-303" rx="25" ry="32" fill="#b97d5b" class="skin"/>
- <path d="M49-313q24-18 25 8q-4 23-22 18" class="stroke" fill="none"/>
- <path d="M72-338q22 2 31 19" class="stroke" fill="none"/>
- <ellipse class="eye" cx="88" cy="-317" rx="10" ry="13"/><circle class="pupil" cx="92" cy="-315" r="5"/>
- <g class="brow"><path d="M75-340l24 2" class="stroke" fill="none"/></g>
- <path d="M96-306l18 27-17 7" class="stroke" fill="none"/>
- <g class="jaw"><path d="M93-260q3 30-26 48" class="stroke" fill="none"/></g>
- <ellipse class="mouth" cx="94" cy="-247" rx="20" ry="10" fill="#681f20" class="stroke"/>
- <g class="sound stroke" fill="none"><path d="M124-260h31M123-240l35 10"/></g>
-</g>
-</svg>
-<div class="clock" aria-label="Clock de seis pulsos"><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i></div>
-<div id="label" class="label" aria-live="polite"></div>
-<div class="controls"><button id="toggle">Pausar</button><button id="restart">Reiniciar</button></div>
+<body><main>
+<header>
+<button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
+<span class="note">Cuatro rostros de frente · sin cuerpo, rotación ni cambio de tamaño</span>
+<output id="turnLabel">Turno blancas</output>
+<div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
+</header>
+<svg viewBox="0 0 960 560" role="img" aria-label="Dos rostros blancos y dos negros recorren un tablero de ajedrez en perspectiva siguiendo los turnos de los caballos">
+<g id="board"></g>
+<polyline id="darkRoute" class="route-dark"/><polyline id="darkRoute2" class="route-dark"/><polyline id="lightRoute" class="route-light"/><polyline id="lightRoute2" class="route-light"/>
+<defs>
+ <g id="frontFace">
+  <ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
+  <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
+  <path class="face-line" d="M-22-27q22-13 44 0"/>
+  <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
+  <path class="face-line" d="M0-7l-7 17h13"/>
+  <path class="face-line" d="M-15 21q15 10 30 0"/>
+  <circle class="joint" cx="0" cy="21" r="4"/>
+ </g>
+</defs>
+<g id="darkFace" class="piece dark-piece"><use href="#frontFace"/></g>
+<g id="darkFace2" class="piece dark-piece"><use href="#frontFace"/></g>
+<g id="lightFace" class="piece light-piece"><use href="#frontFace"/></g>
+<g id="lightFace2" class="piece light-piece"><use href="#frontFace"/></g>
+</svg></main>
 <script>
-(()=>{const faces={front:document.querySelector('#front'),threequarter:document.querySelector('#threequarter'),backprofile:document.querySelector('#backprofile')},dots=[...document.querySelectorAll('.beat')],label=document.querySelector('#label'),toggle=document.querySelector('#toggle'),restart=document.querySelector('#restart');
-const states=[{who:['front'],text:'Habla el rostro de frente'},{who:['threequarter'],text:'Responde el medio perfil'},{who:['backprofile'],text:'Interviene el rostro casi de espaldas'},{who:['front','threequarter'],text:'Dos voces se superponen'},{who:['backprofile'],text:'El rostro girado insiste'},{who:[],text:'Pausa'}];
-let beat=-1,timer,running=true;function render(){const s=states[beat];Object.entries(faces).forEach(([id,el])=>el.classList.toggle('speaker',s.who.includes(id)));dots.forEach((d,i)=>d.classList.toggle('on',i===beat));label.textContent='Clock '+(beat+1)+'/6 · '+s.text}
-function step(){beat=(beat+1)%states.length;render()}function start(){clearInterval(timer);timer=setInterval(step,950)}
-toggle.onclick=()=>{running=!running;toggle.textContent=running?'Pausar':'Continuar';running?start():clearInterval(timer)};restart.onclick=()=>{beat=-1;step();if(running)start()};step();start()})();
-</script></main></body></html>
+const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
+const corners={backLeft:[330,90],backRight:[630,90],frontLeft:[70,500],frontRight:[890,500]};
+const lightPath=["B1","D2","F3","H4","F5","D6","B7"],darkPath=["B8","D7","F6","H5","F4","D3","B2"];
+const lightPath2=["G1","H3","G5","H7","F8"],darkPath2=["G8","H6","G4","H2","F1"];
+const state={running:true,origin:performance.now(),pausedAt:0,tickDuration:.8,moveDuration:.55};
+function mix(a,b,t){return a+(b-a)*t}function surfacePoint(u,v){const left=[mix(corners.backLeft[0],corners.frontLeft[0],v),mix(corners.backLeft[1],corners.frontLeft[1],v)],right=[mix(corners.backRight[0],corners.frontRight[0],v),mix(corners.backRight[1],corners.frontRight[1],v)];return[mix(left[0],right[0],u),mix(left[1],right[1],u)]}
+function cellPoint(name){const col=name.charCodeAt(0)-65,row=Number(name.slice(1))-1;return surfacePoint((col+.5)/8,1-(row+.5)/8)}
+function add(tag,attrs,parent){const node=document.createElementNS(NS,tag);for(const[key,value]of Object.entries(attrs))node.setAttribute(key,value);parent.appendChild(node);return node}
+function drawBoard(){const board=$("board");add("polygon",{class:"board-edge",points:[corners.backLeft,corners.backRight,corners.frontRight,corners.frontLeft].map(p=>p.join(",")).join(" ")},board);
+for(let row=0;row<8;row++)for(let col=0;col<8;col++){const u0=col/8,u1=(col+1)/8,v0=row/8,v1=(row+1)/8,points=[surfacePoint(u0,v0),surfacePoint(u1,v0),surfacePoint(u1,v1),surfacePoint(u0,v1)];add("polygon",{points:points.map(p=>p.join(",")).join(" "),fill:(row+col)%2?"#b6895c":"#ead8b9",stroke:"#614a35","stroke-width":".7"},board)}
+for(let col=0;col<8;col++){const p=surfacePoint((col+.5)/8,1.035),t=add("text",{x:p[0],y:p[1]+17,class:"label"},board);t.textContent=String.fromCharCode(65+col)}
+for(let row=0;row<8;row++){const p=surfacePoint(-.035,1-(row+.5)/8),t=add("text",{x:p[0]-8,y:p[1]+5,class:"label"},board);t.textContent=row+1}
+[["darkRoute",darkPath],["darkRoute2",darkPath2],["lightRoute",lightPath],["lightRoute2",lightPath2]].forEach(([id,path])=>$(id).setAttribute("points",path.map(cellPoint).map(p=>p.join(",")).join(" ")))}
+function smooth(t){return t*t*(3-2*t)}function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function pingPongPoint(path,index){const span=path.length-1,phase=((index%(span*2))+(span*2))%(span*2);return cellPoint(path[phase<=span?phase:span*2-phase])}
+function clockDrivenPosition(path,t,eventBeat){const d=state.tickDuration,firstStart=(eventBeat-1)*d;if(t<firstStart){const[x,y]=pingPongPoint(path,0);return{x,y}}const eventIndex=Math.floor((t-firstStart)/(5*d)),eventStart=firstStart+eventIndex*5*d,progress=smooth(clamp((t-eventStart)/state.moveDuration,0,1)),a=pingPongPoint(path,eventIndex),b=pingPongPoint(path,eventIndex+1);return{x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)}}
+function updateClock(t){const count=Math.floor(t/state.tickDuration)%5+1;$("clockCount").value=count===5?"—":count;$("turnLabel").value=count===5?"Pausa":count%2?"Turno blancas":"Turno negras";document.querySelectorAll(".tick").forEach((node,i)=>node.classList.toggle("on",i+1===count))}
+function render(t){updateClock(t);const light=clockDrivenPosition(lightPath,t,1),dark=clockDrivenPosition(darkPath,t,2),light2=clockDrivenPosition(lightPath2,t,3),dark2=clockDrivenPosition(darkPath2,t,4);
+[["darkFace",dark],["darkFace2",dark2],["lightFace",light],["lightFace2",light2]].forEach(([id,p])=>$(id).setAttribute("transform",`translate(${p.x} ${p.y})`))}
+function frame(now){if(state.running){state.pausedAt=(now-state.origin)/1000;render(state.pausedAt)}requestAnimationFrame(frame)}
+$("toggle").onclick=()=>{state.running=!state.running;if(state.running){state.origin=performance.now()-state.pausedAt*1000;$("toggle").textContent="Pausa"}else $("toggle").textContent="Continuar"};
+$("restart").onclick=()=>{state.origin=performance.now();state.pausedAt=0;state.running=true;$("toggle").textContent="Pausa";render(0)};
+for(let i=1;i<=5;i++){const node=document.createElement("span");node.className="tick";node.textContent=i===5?"—":i;$("ticks").appendChild(node)}
+drawBoard();render(0);requestAnimationFrame(frame);
+</script></body></html>
