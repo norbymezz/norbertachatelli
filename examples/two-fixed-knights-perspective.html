@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cartoon Engine — Cuatro rostros en perspectiva</title>
+<title>Cartoon Engine — Cuatro personas articuladas en perspectiva</title>
 <style>
 :root{color-scheme:dark;--bg:#0b1018;--panel:#172131;--ink:#edf4ff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,sans-serif}
@@ -19,48 +19,85 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 .face-head{fill:var(--face-fill);stroke:var(--face-stroke);stroke-width:5}
 .face-line{fill:none;stroke:var(--feature);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
 .eye{fill:var(--feature)}.joint{fill:var(--face-fill);stroke:var(--feature);stroke-width:3}
+.bone{stroke:var(--feature);stroke-width:7;stroke-linecap:round}.body-joint{fill:var(--face-fill);stroke:var(--feature);stroke-width:3}
+.hair{fill:var(--feature);stroke:var(--face-stroke);stroke-width:3;stroke-linejoin:round}.sclera{fill:#fff;stroke:#171b23;stroke-width:2}.pupil{fill:#171b23}
 .route-dark,.route-light{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:7 8;opacity:.55}.route-dark{stroke:#66d3ff}.route-light{stroke:#fff0be}
 </style>
 </head>
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Cuatro rostros de frente · sin cuerpo, rotación ni cambio de tamaño</span>
+<span class="note">Cuatro caras caricaturescas · cuerpos de palitos y articulaciones</span>
 <output id="turnLabel">Turno blancas</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
-<svg viewBox="0 0 960 560" role="img" aria-label="Dos rostros blancos y dos negros recorren un tablero de ajedrez en perspectiva siguiendo los turnos de los caballos">
+<svg viewBox="0 0 960 560" role="img" aria-label="Dos personas blancas y dos negras, con cuerpos articulados de palitos, recorren un tablero de ajedrez en perspectiva">
 <g id="board"></g>
 <polyline id="darkRoute" class="route-dark"/><polyline id="darkRoute2" class="route-dark"/><polyline id="lightRoute" class="route-light"/><polyline id="lightRoute2" class="route-light"/>
-<g id="darkFace" class="piece dark-piece"><ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
-  <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
-  <path class="face-line" d="M-22-27q22-13 44 0"/>
-  <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
-  <path class="face-line" d="M0-7l-7 17h13"/>
-  <path class="face-line" d="M-15 21q15 10 30 0"/>
-  <circle class="joint" cx="0" cy="21" r="4"/></g>
-<g id="darkFace2" class="piece dark-piece"><ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
-  <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
-  <path class="face-line" d="M-22-27q22-13 44 0"/>
-  <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
-  <path class="face-line" d="M0-7l-7 17h13"/>
-  <path class="face-line" d="M-15 21q15 10 30 0"/>
-  <circle class="joint" cx="0" cy="21" r="4"/></g>
-<g id="lightFace" class="piece light-piece"><ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
-  <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
-  <path class="face-line" d="M-22-27q22-13 44 0"/>
-  <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
-  <path class="face-line" d="M0-7l-7 17h13"/>
-  <path class="face-line" d="M-15 21q15 10 30 0"/>
-  <circle class="joint" cx="0" cy="21" r="4"/></g>
-<g id="lightFace2" class="piece light-piece"><ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
-  <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
-  <path class="face-line" d="M-22-27q22-13 44 0"/>
-  <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
-  <path class="face-line" d="M0-7l-7 17h13"/>
-  <path class="face-line" d="M-15 21q15 10 30 0"/>
-  <circle class="joint" cx="0" cy="21" r="4"/></g>
-</svg></main>
+<g id="darkFace" class="piece dark-piece"><ellipse class="shadow" cx="0" cy="51" rx="31" ry="7"/>
+  <line class="bone" x1="0" y1="-47" x2="0" y2="15"/>
+  <line class="bone" x1="0" y1="-31" x2="-27" y2="-5"/><line class="bone" x1="-27" y1="-5" x2="-34" y2="22"/>
+  <line class="bone" x1="0" y1="-31" x2="27" y2="-5"/><line class="bone" x1="27" y1="-5" x2="34" y2="22"/>
+  <line class="bone" x1="0" y1="15" x2="-15" y2="32"/><line class="bone" x1="-15" y1="32" x2="-20" y2="50"/>
+  <line class="bone" x1="0" y1="15" x2="15" y2="32"/><line class="bone" x1="15" y1="32" x2="20" y2="50"/>
+  <circle class="body-joint" cx="0" cy="-31" r="5"/><circle class="body-joint" cx="-27" cy="-5" r="5"/><circle class="body-joint" cx="27" cy="-5" r="5"/>
+  <circle class="body-joint" cx="-34" cy="22" r="5"/><circle class="body-joint" cx="34" cy="22" r="5"/><circle class="body-joint" cx="0" cy="15" r="5"/>
+  <circle class="body-joint" cx="-15" cy="32" r="5"/><circle class="body-joint" cx="15" cy="32" r="5"/><circle class="body-joint" cx="-20" cy="50" r="5"/><circle class="body-joint" cx="20" cy="50" r="5"/>
+  <ellipse class="face-head" cx="0" cy="-75" rx="28" ry="33"/>
+  <path class="hair" d="M-26-84q5-29 27-29q23 2 27 29q-14-10-29-9q-14 0-25 9Z"/>
+  <ellipse class="sclera" cx="-11" cy="-77" rx="7" ry="8"/><ellipse class="sclera" cx="11" cy="-77" rx="7" ry="8"/>
+  <circle class="pupil" cx="-8" cy="-76" r="3"/><circle class="pupil" cx="14" cy="-76" r="3"/>
+  <path class="face-line" d="M0-75l-5 13h10"/>
+  <path class="face-line" d="M-12-54q12 7 24 0"/>
+  <circle class="joint" cx="0" cy="-54" r="3.5"/></g>
+<g id="darkFace2" class="piece dark-piece"><ellipse class="shadow" cx="0" cy="51" rx="31" ry="7"/>
+  <line class="bone" x1="0" y1="-47" x2="0" y2="15"/>
+  <line class="bone" x1="0" y1="-31" x2="-27" y2="-5"/><line class="bone" x1="-27" y1="-5" x2="-34" y2="22"/>
+  <line class="bone" x1="0" y1="-31" x2="27" y2="-5"/><line class="bone" x1="27" y1="-5" x2="34" y2="22"/>
+  <line class="bone" x1="0" y1="15" x2="-15" y2="32"/><line class="bone" x1="-15" y1="32" x2="-20" y2="50"/>
+  <line class="bone" x1="0" y1="15" x2="15" y2="32"/><line class="bone" x1="15" y1="32" x2="20" y2="50"/>
+  <circle class="body-joint" cx="0" cy="-31" r="5"/><circle class="body-joint" cx="-27" cy="-5" r="5"/><circle class="body-joint" cx="27" cy="-5" r="5"/>
+  <circle class="body-joint" cx="-34" cy="22" r="5"/><circle class="body-joint" cx="34" cy="22" r="5"/><circle class="body-joint" cx="0" cy="15" r="5"/>
+  <circle class="body-joint" cx="-15" cy="32" r="5"/><circle class="body-joint" cx="15" cy="32" r="5"/><circle class="body-joint" cx="-20" cy="50" r="5"/><circle class="body-joint" cx="20" cy="50" r="5"/>
+  <ellipse class="face-head" cx="0" cy="-75" rx="28" ry="33"/>
+  <path class="hair" d="M-26-84q5-29 27-29q23 2 27 29q-14-10-29-9q-14 0-25 9Z"/>
+  <ellipse class="sclera" cx="-11" cy="-77" rx="7" ry="8"/><ellipse class="sclera" cx="11" cy="-77" rx="7" ry="8"/>
+  <circle class="pupil" cx="-8" cy="-76" r="3"/><circle class="pupil" cx="14" cy="-76" r="3"/>
+  <path class="face-line" d="M0-75l-5 13h10"/>
+  <path class="face-line" d="M-12-54q12 7 24 0"/>
+  <circle class="joint" cx="0" cy="-54" r="3.5"/></g>
+<g id="lightFace" class="piece light-piece"><ellipse class="shadow" cx="0" cy="51" rx="31" ry="7"/>
+  <line class="bone" x1="0" y1="-47" x2="0" y2="15"/>
+  <line class="bone" x1="0" y1="-31" x2="-27" y2="-5"/><line class="bone" x1="-27" y1="-5" x2="-34" y2="22"/>
+  <line class="bone" x1="0" y1="-31" x2="27" y2="-5"/><line class="bone" x1="27" y1="-5" x2="34" y2="22"/>
+  <line class="bone" x1="0" y1="15" x2="-15" y2="32"/><line class="bone" x1="-15" y1="32" x2="-20" y2="50"/>
+  <line class="bone" x1="0" y1="15" x2="15" y2="32"/><line class="bone" x1="15" y1="32" x2="20" y2="50"/>
+  <circle class="body-joint" cx="0" cy="-31" r="5"/><circle class="body-joint" cx="-27" cy="-5" r="5"/><circle class="body-joint" cx="27" cy="-5" r="5"/>
+  <circle class="body-joint" cx="-34" cy="22" r="5"/><circle class="body-joint" cx="34" cy="22" r="5"/><circle class="body-joint" cx="0" cy="15" r="5"/>
+  <circle class="body-joint" cx="-15" cy="32" r="5"/><circle class="body-joint" cx="15" cy="32" r="5"/><circle class="body-joint" cx="-20" cy="50" r="5"/><circle class="body-joint" cx="20" cy="50" r="5"/>
+  <ellipse class="face-head" cx="0" cy="-75" rx="28" ry="33"/>
+  <path class="hair" d="M-26-84q5-29 27-29q23 2 27 29q-14-10-29-9q-14 0-25 9Z"/>
+  <ellipse class="sclera" cx="-11" cy="-77" rx="7" ry="8"/><ellipse class="sclera" cx="11" cy="-77" rx="7" ry="8"/>
+  <circle class="pupil" cx="-8" cy="-76" r="3"/><circle class="pupil" cx="14" cy="-76" r="3"/>
+  <path class="face-line" d="M0-75l-5 13h10"/>
+  <path class="face-line" d="M-12-54q12 7 24 0"/>
+  <circle class="joint" cx="0" cy="-54" r="3.5"/></g>
+<g id="lightFace2" class="piece light-piece"><ellipse class="shadow" cx="0" cy="51" rx="31" ry="7"/>
+  <line class="bone" x1="0" y1="-47" x2="0" y2="15"/>
+  <line class="bone" x1="0" y1="-31" x2="-27" y2="-5"/><line class="bone" x1="-27" y1="-5" x2="-34" y2="22"/>
+  <line class="bone" x1="0" y1="-31" x2="27" y2="-5"/><line class="bone" x1="27" y1="-5" x2="34" y2="22"/>
+  <line class="bone" x1="0" y1="15" x2="-15" y2="32"/><line class="bone" x1="-15" y1="32" x2="-20" y2="50"/>
+  <line class="bone" x1="0" y1="15" x2="15" y2="32"/><line class="bone" x1="15" y1="32" x2="20" y2="50"/>
+  <circle class="body-joint" cx="0" cy="-31" r="5"/><circle class="body-joint" cx="-27" cy="-5" r="5"/><circle class="body-joint" cx="27" cy="-5" r="5"/>
+  <circle class="body-joint" cx="-34" cy="22" r="5"/><circle class="body-joint" cx="34" cy="22" r="5"/><circle class="body-joint" cx="0" cy="15" r="5"/>
+  <circle class="body-joint" cx="-15" cy="32" r="5"/><circle class="body-joint" cx="15" cy="32" r="5"/><circle class="body-joint" cx="-20" cy="50" r="5"/><circle class="body-joint" cx="20" cy="50" r="5"/>
+  <ellipse class="face-head" cx="0" cy="-75" rx="28" ry="33"/>
+  <path class="hair" d="M-26-84q5-29 27-29q23 2 27 29q-14-10-29-9q-14 0-25 9Z"/>
+  <ellipse class="sclera" cx="-11" cy="-77" rx="7" ry="8"/><ellipse class="sclera" cx="11" cy="-77" rx="7" ry="8"/>
+  <circle class="pupil" cx="-8" cy="-76" r="3"/><circle class="pupil" cx="14" cy="-76" r="3"/>
+  <path class="face-line" d="M0-75l-5 13h10"/>
+  <path class="face-line" d="M-12-54q12 7 24 0"/>
+  <circle class="joint" cx="0" cy="-54" r="3.5"/></g></svg></main>
 <script>
 const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
 const corners={backLeft:[330,90],backRight:[630,90],frontLeft:[70,500],frontRight:[890,500]};
