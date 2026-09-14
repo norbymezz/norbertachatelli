@@ -1,60 +1,42 @@
 <!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Escala de planos · 00:30–01:00</title>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Friends · For the record / Front and back</title>
 <style>
-:root{color-scheme:dark;--ink:#121820;--line:#edf3f8;--accent:#ffd166;--muted:#93a0b2}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#101722;color:#eef3f8;font:15px system-ui,sans-serif;display:grid;place-items:center}
-main{width:min(1060px,100%);padding:14px}.panel{overflow:hidden;border-radius:18px;background:#182334;box-shadow:0 18px 50px #0009}
-header{padding:15px 18px 11px}.title{font-size:clamp(18px,3vw,27px);font-weight:800}.sub{color:#b9c3d1;margin-top:4px}
-svg{display:block;width:100%;height:auto;background:#b59879}.figure .body{fill:#243142;stroke:var(--line);stroke-width:6;stroke-linejoin:round}.figure .head{fill:#d39a70;stroke:var(--line);stroke-width:6}.figure .eye{fill:var(--ink)}.figure .mouth{fill:none;stroke:var(--ink);stroke-width:5;stroke-linecap:round}
-.figure.back{opacity:.48}.frame-line{fill:none;stroke:#fff5;stroke-width:2;stroke-dasharray:8 8}.label{fill:#fff;font:800 20px system-ui,sans-serif;paint-order:stroke;stroke:#111b;stroke-width:7}.small{font-size:14px;fill:#f4e6d5}
-.timeline{position:relative;height:54px;margin:11px 18px 0}.rail{position:absolute;left:0;right:0;top:15px;height:6px;border-radius:4px;background:#34445a}.segment{position:absolute;top:15px;height:6px;background:#6d7b8e;border-right:1px solid #172233}.segment.active{background:var(--accent)}.ticks{position:absolute;inset:28px 0 auto;display:flex;justify-content:space-between;color:#9eabbc;font-size:12px}.cursor{position:absolute;top:7px;width:4px;height:23px;border-radius:4px;background:#fff;box-shadow:0 0 9px #fff}
-.meta{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:7px 18px 2px}.shot-name{font-weight:800;font-size:18px}.time{font-variant-numeric:tabular-nums;color:var(--accent);font-weight:800}
-.controls{display:flex;gap:9px;padding:12px 18px 18px}button{border:1px solid #53637a;border-radius:999px;background:#28364a;color:#fff;padding:9px 16px;cursor:pointer}
-</style></head>
-<body><main><section class="panel">
-<header><div class="title">Tamaños y alternancia de planos · 00:30–01:00</div><div class="sub">Representación geométrica del interrogatorio: el tamaño expresa la cercanía de cámara.</div></header>
-<svg id="stage" viewBox="0 0 1000 560" role="img" aria-labelledby="svgTitle svgDesc">
-<title id="svgTitle">Secuencia esquemática de tamaños de plano</title><desc id="svgDesc">Figuras geométricas cambian de tamaño y posición siguiendo los planos del fragmento.</desc>
-<defs>
- <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#bda184"/><stop offset="1" stop-color="#84644d"/></linearGradient>
- <g id="person">
-  <path class="body" d="M-74 160Q-62 75-35 49L0 68L35 49Q62 75 74 160Z"/>
-  <circle class="head" cy="0" r="58"/><circle class="eye" cx="-20" cy="-8" r="5"/><circle class="eye" cx="20" cy="-8" r="5"/>
-  <path class="mouth" d="M-20 23Q0 34 20 23"/>
- </g>
-</defs>
-<rect width="1000" height="560" fill="url(#wall)"/><rect y="380" width="1000" height="180" fill="#4f3128"/>
-<path d="M0 380H1000M0 486H1000" stroke="#211b1a" stroke-width="8"/>
-<g id="scene"></g>
-<rect class="frame-line" x="20" y="20" width="960" height="520" rx="12"/>
-<text id="scaleLabel" class="label" x="42" y="54"></text><text id="compositionLabel" class="label small" x="42" y="82"></text>
+:root{color-scheme:dark;--bg:#111923;--panel:#192538;--line:#f5f7fa;--skin:#d49b72;--ross:#496d91;--rachel:#b35663;--beat:#ffd166}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:#eef3f8;font:15px system-ui,sans-serif}
+main{width:min(1040px,100%);padding:14px}.card{overflow:hidden;border-radius:18px;background:var(--panel);box-shadow:0 18px 50px #0009}
+header{padding:15px 18px 10px}h1{font-size:clamp(18px,3vw,26px);margin:0}.sub{color:#bac5d4;margin-top:4px}
+svg{display:block;width:100%;height:auto;background:#a88970}.shot{opacity:0;transition:opacity .18s}.shot.active{opacity:1}.room{transition:transform 1s ease}
+.body{stroke:var(--line);stroke-width:8;stroke-linecap:round;stroke-linejoin:round}.head{fill:var(--skin);stroke:var(--line);stroke-width:6}.eye{fill:#19202a}.mouth{fill:none;stroke:#19202a;stroke-width:5;stroke-linecap:round}.talk .mouth{animation:talk .2s infinite alternate}@keyframes talk{to{transform:scaleY(1.9)}}.mouth{transform-box:fill-box;transform-origin:center}
+.tag{fill:#fff;font:800 20px system-ui;paint-order:stroke;stroke:#111;stroke-width:7}.note{font-size:14px;fill:#e7edf5}
+.clock{display:flex;gap:8px;justify-content:center;padding:12px 12px 4px}.dot{width:13px;height:13px;border-radius:50%;background:#3a485d}.dot.on{background:var(--beat);box-shadow:0 0 12px #ffd166aa}
+.info{display:grid;grid-template-columns:1fr auto;gap:10px;padding:8px 18px}.name{font-weight:800;font-size:18px}.dialog{color:#c5cfdd}.count{font-size:24px;color:var(--beat);font-weight:900}.controls{display:flex;gap:9px;padding:10px 18px 17px}button{border:1px solid #52637a;background:#29384c;color:white;border-radius:999px;padding:9px 16px}
+</style></head><body><main><section class="card">
+<header><h1>“For the record…” → “front and back”</h1><div class="sub">Alternancia esquemática de planos · dormitorio → living</div></header>
+<svg viewBox="0 0 1000 560" aria-label="Ross y Rachel discuten alternando planos">
+<defs><g id="person"><path class="body" d="M0 70V225M0 110L-78 178M0 110L78 178M0 225L-55 330M0 225L55 330" fill="none"/><circle class="head" cy="0" r="68"/><circle class="eye" cx="-24" cy="-10" r="6"/><circle class="eye" cx="24" cy="-10" r="6"/><path class="mouth" d="M-25 28Q0 38 25 28"/></g></defs>
+<g id="wide" class="shot active"><g id="wideRoom" class="room">
+ <rect width="1000" height="560" fill="#a98a70"/><rect y="390" width="1000" height="170" fill="#704934"/><rect x="90" y="78" width="290" height="240" fill="#795847" stroke="#2b2422" stroke-width="10"/><rect x="760" y="70" width="160" height="300" fill="#5c463a" stroke="#2b2422" stroke-width="9"/>
+ <g id="rossWide" transform="translate(650 210) scale(.9)" style="--line:#eff5fb"><use href="#person"/><path class="body" d="M-64 86Q0 48 64 86L60 230H-60Z" fill="var(--ross)"/></g>
+ <g id="rachelWide" transform="translate(350 220) scale(.88)"><use href="#person"/><path class="body" d="M-64 86Q0 50 64 86L60 230H-60Z" fill="var(--rachel)"/></g>
+</g></g>
+<g id="rossClose" class="shot"><rect width="1000" height="560" fill="#8c6d58"/><g id="rossFace" transform="translate(530 320) scale(2.05)"><use href="#person"/><path class="body" d="M-64 86Q0 48 64 86L60 230H-60Z" fill="var(--ross)"/></g></g>
+<g id="rachelClose" class="shot"><rect width="1000" height="560" fill="#9b7c64"/><g id="rachelFace" transform="translate(470 320) scale(2.05)"><use href="#person"/><path class="body" d="M-64 86Q0 50 64 86L60 230H-60Z" fill="var(--rachel)"/></g></g>
+<text id="plan" class="tag" x="34" y="43">Plano conjunto</text><text id="camera" class="tag note" x="34" y="70">Cámara fija</text>
 </svg>
-<div class="timeline"><div class="rail"></div><div id="segments"></div><div id="cursor" class="cursor"></div><div class="ticks"><span>00:30</span><span>00:35</span><span>00:40</span><span>00:45</span><span>00:50</span><span>00:55</span><span>01:00</span></div></div>
-<div class="meta"><div id="shotName" class="shot-name"></div><div id="time" class="time">00:30.0</div></div>
+<div id="clock" class="clock"></div><div class="info"><div><div id="name" class="name"></div><div id="dialog" class="dialog"></div></div><div id="count" class="count">1</div></div>
 <div class="controls"><button id="toggle">Pausar</button><button id="restart">Reiniciar</button></div>
 </section></main>
 <script>
-(()=>{
-const shots=[
- {from:0,to:3.6,name:"Plano americano · interrogador",scale:"PA",note:"figura dominante; testigo y sala al fondo",people:[["kaffee",650,365,1.38,0],["testigo",370,310,.64,1],["sala",155,340,.46,1]]},
- {from:3.6,to:7.2,name:"Primer plano · testigo",scale:"PP",note:"rostro y hombros ocupan el cuadro",people:[["jessup",545,350,2.75,0]]},
- {from:7.2,to:10.5,name:"Plano medio corto · interrogador",scale:"PMC",note:"contraplano frontal; fondo aún legible",people:[["kaffee",570,355,1.95,0],["guardia",255,330,.56,1]]},
- {from:10.5,to:14.0,name:"Primer plano · testigo",scale:"PP",note:"respuesta frontal, mayor presión visual",people:[["jessup",525,350,2.9,0]]},
- {from:14.0,to:17.2,name:"Plano de reacción",scale:"PMC",note:"una figura escucha; composición estable",people:[["reaction",515,360,1.82,0],["sala",800,350,.5,1]]},
- {from:17.2,to:21.0,name:"Plano americano · interrogador",scale:"PA",note:"vuelve el cuerpo y reaparece la profundidad",people:[["kaffee",665,365,1.42,0],["testigo",350,315,.62,1]]},
- {from:21.0,to:25.5,name:"Primer plano · testigo",scale:"PP",note:"el rostro domina casi toda la altura",people:[["jessup",520,355,3.05,0]]},
- {from:25.5,to:30,name:"Plano medio corto · interrogador",scale:"PMC",note:"contraplano final del tramo",people:[["kaffee",585,355,2.0,0],["guardia",250,330,.55,1]]}
-];
-const scene=document.querySelector("#scene"),scaleLabel=document.querySelector("#scaleLabel"),compositionLabel=document.querySelector("#compositionLabel"),shotName=document.querySelector("#shotName"),timeEl=document.querySelector("#time"),cursor=document.querySelector("#cursor"),segments=document.querySelector("#segments"),toggle=document.querySelector("#toggle");
-shots.forEach((s,i)=>{const el=document.createElement("i");el.className="segment";el.style.left=(s.from/30*100)+"%";el.style.width=((s.to-s.from)/30*100)+"%";el.dataset.i=i;segments.append(el)});
-let t=0,last=performance.now(),running=true,active=-1;
-function draw(s,index){scene.innerHTML="";s.people.slice().sort((a,b)=>a[3]-b[3]).forEach(p=>{const g=document.createElementNS("http://www.w3.org/2000/svg","g");g.setAttribute("class","figure"+(p[4]?" back":""));g.setAttribute("transform",`translate(${p[1]} ${p[2]}) scale(${p[3]})`);const u=document.createElementNS("http://www.w3.org/2000/svg","use");u.setAttribute("href","#person");g.append(u);scene.append(g)});scaleLabel.textContent=s.scale;compositionLabel.textContent=s.note;shotName.textContent=s.name;[...segments.children].forEach((el,i)=>el.classList.toggle("active",i===index))}
-function render(){const index=Math.min(shots.length-1,shots.findIndex(s=>t>=s.from&&t<s.to));if(index!==active){active=index;draw(shots[index],index)}cursor.style.left=`calc(${t/30*100}% - 2px)`;const absolute=30+t;timeEl.textContent=`00:${absolute.toFixed(1).padStart(4,"0")}`}
-function loop(now){if(running){t+=(now-last)/1000;if(t>=30)t=0}last=now;render();requestAnimationFrame(loop)}
-toggle.onclick=()=>{running=!running;toggle.textContent=running?"Pausar":"Continuar";last=performance.now()};
-document.querySelector("#restart").onclick=()=>{t=0;active=-1;render()};render();requestAnimationFrame(loop);
-})();
+(()=>{const states=[
+ {shot:"wide",speaker:"rossWide",plan:"Plano conjunto medio",camera:"Cámara fija",name:"Ross",dialog:"Defiende que la ruptura fue responsabilidad de los dos."},
+ {shot:"rachelClose",speaker:"rachelFace",plan:"Plano medio corto · Rachel",camera:"Corte directo",name:"Rachel",dialog:"Replica que la responsabilidad fue de Ross y la otra mujer."},
+ {shot:"rossClose",speaker:"rossFace",plan:"Plano medio corto · Ross",camera:"Corte directo",name:"Ross",dialog:"Admite que aceptó algo sin terminar de leer la carta."},
+ {shot:"rachelClose",speaker:"rachelFace",plan:"Primer plano · reacción",camera:"Corte directo",name:"Rachel",dialog:"Pregunta, incrédula, qué ocurrió con la lectura."},
+ {shot:"rossClose",speaker:"rossFace",plan:"Primer plano · Ross",camera:"Corte directo",name:"Ross",dialog:"Confiesa que se quedó dormido."},
+ {shot:"rachelClose",speaker:"rachelFace",plan:"Primer plano · Rachel",camera:"Corte directo",name:"Rachel",dialog:"Repite la confesión, cada vez más enojada."},
+ {shot:"wide",speaker:"rossWide",plan:"Plano conjunto en desplazamiento",camera:"Reencuadre lateral hacia el living",name:"Ross",dialog:"Se justifica por la hora y la extensión de la carta: dieciocho páginas, frente y dorso.",move:true}
+],shots=[...document.querySelectorAll(".shot")],clock=document.querySelector("#clock"),plan=document.querySelector("#plan"),camera=document.querySelector("#camera"),name=document.querySelector("#name"),dialog=document.querySelector("#dialog"),count=document.querySelector("#count"),wideRoom=document.querySelector("#wideRoom");states.forEach(()=>clock.append(Object.assign(document.createElement("i"),{className:"dot"})));let i=0,running=true,timer;
+function render(){const s=states[i];shots.forEach(x=>x.classList.toggle("active",x.id===s.shot));document.querySelectorAll("#rossWide,#rachelWide,#rossFace,#rachelFace").forEach(x=>x.classList.toggle("talk",x.id===s.speaker));[...clock.children].forEach((d,n)=>d.classList.toggle("on",n===i));plan.textContent=s.plan;camera.textContent=s.camera;name.textContent=s.name;dialog.textContent=s.dialog;count.textContent=i+1;wideRoom.style.transform=s.move?"translateX(-95px)":"translateX(0)"}
+function start(){clearInterval(timer);timer=setInterval(()=>{i=(i+1)%states.length;render()},1900)}document.querySelector("#toggle").onclick=e=>{running=!running;e.target.textContent=running?"Pausar":"Continuar";running?start():clearInterval(timer)};document.querySelector("#restart").onclick=()=>{i=0;render();if(running)start()};render();start()})();
 </script></body></html>
