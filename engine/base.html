@@ -2,82 +2,86 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tres orientaciones discutiendo — Cartoon Engine</title>
+<title>Tres rostros discutiendo — Cartoon Engine</title>
 <style>
-:root{color-scheme:dark;--a:#ff6257;--b:#ffd15c;--c:#62bcff;--bg:#090c12}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:#f5f2e9;font:15px system-ui,sans-serif}
-main{width:min(980px,100%);padding:16px}.stage{overflow:hidden;border:1px solid #2e3544;border-radius:22px;background:radial-gradient(circle at 50% 38%,#252c39,#111620 62%,#0a0d13)}
-svg{display:block;width:100%;height:auto}.face{fill:none;stroke:currentColor;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;transform-box:fill-box;transform-origin:center;transition:transform .18s ease}
-.front{color:var(--a)}.threequarter{color:var(--b)}.backprofile{color:var(--c)}
-.node{fill:#10141c;stroke:currentColor;stroke-width:5}.eye{fill:currentColor}.hidden{opacity:.3;stroke-dasharray:5 9}.mouth,.jaw,.brow{transform-box:fill-box;transform-origin:center;transition:transform .15s ease}
-.speaker{transform:translateY(-6px) rotate(-1.4deg)}.speaker .jaw{transform:translateY(8px)}.speaker .mouth{animation:talk .24s steps(2,end) infinite}.speaker .brow{transform:translateY(-5px) rotate(-7deg)}
-.sound{opacity:0;transition:opacity .12s;stroke:currentColor;stroke-width:5;stroke-linecap:round}.speaker .sound{opacity:1;animation:sound .42s ease-in-out infinite alternate}
-@keyframes talk{50%{transform:scaleY(2)}}@keyframes sound{to{opacity:.3}}
-.clock{display:flex;justify-content:center;gap:9px;padding:13px 10px 5px}.beat{width:13px;height:13px;border-radius:50%;border:2px solid #596174;background:#303746}.beat.on{background:#fff;border-color:#fff;box-shadow:0 0 13px #fff9}
-.label{text-align:center;min-height:23px;color:#cbd2de}.controls{display:flex;justify-content:center;gap:9px;padding:12px}button{color:#f5f2e9;background:#1a202b;border:1px solid #3a4354;border-radius:999px;padding:8px 15px;cursor:pointer}
-.caption{fill:#9da7b8;font:600 14px system-ui,sans-serif;letter-spacing:.08em;text-anchor:middle}
+:root{--ink:#202126;--sky:#93d8ee;--floor:#d9b78a;--skin1:#d9a06f;--skin2:#c98f68;--skin3:#b97d5b}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#17212a;font-family:system-ui,sans-serif}
+.frame{width:min(1080px,100%);overflow:hidden;border-radius:18px;box-shadow:0 18px 50px #0007;background:var(--sky)}
+svg{display:block;width:100%;height:auto}.stroke{stroke:var(--ink);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}.person{transform-box:fill-box;transform-origin:center bottom;transition:transform .18s ease}
+.skin{stroke:var(--ink);stroke-width:6}.hair{fill:#303036;stroke:var(--ink);stroke-width:6}.eye{fill:#fff;stroke:var(--ink);stroke-width:5}.pupil{fill:var(--ink)}.brow,.jaw,.mouth{transform-box:fill-box;transform-origin:center;transition:transform .15s ease}
+.speaker{transform:translateY(-6px) rotate(-1deg)}.speaker .mouth{animation:talk .2s ease-in-out infinite alternate}.speaker .jaw{transform:translateY(6px)}.speaker .brow{transform:translateY(-4px) rotate(-6deg)}
+@keyframes talk{from{transform:scaleY(.55)}to{transform:scaleY(1.3)}}.sound{opacity:0;transition:opacity .12s}.speaker .sound{opacity:1;animation:signal .42s ease-in-out infinite alternate}@keyframes signal{to{opacity:.35}}
+.title{font-size:18px;font-weight:900;fill:#fff;paint-order:stroke;stroke:#202126;stroke-width:6px;letter-spacing:2px;text-anchor:middle}
+.clock{display:flex;justify-content:center;gap:9px;padding:12px 10px 4px;background:#17212a}.beat{width:13px;height:13px;border:2px solid #697488;background:#313a48;border-radius:50%}.beat.on{background:#fff;border-color:#fff;box-shadow:0 0 13px #fff9}
+.label{min-height:24px;text-align:center;padding-top:5px;color:#e9edf4;background:#17212a;font:15px system-ui,sans-serif}.controls{display:flex;justify-content:center;gap:9px;padding:11px;background:#17212a}
+button{padding:8px 15px;border:1px solid #586477;border-radius:999px;background:#283342;color:#fff;cursor:pointer}
 @media(prefers-reduced-motion:reduce){.mouth,.sound{animation:none!important}}
 </style>
 </head>
-<body><main><section class="stage" aria-label="Tres rostros con distintas orientaciones discutiendo">
-<svg viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
-<title id="title">Un rostro de frente, uno de medio perfil y otro casi de espaldas discutiendo</title>
-<desc id="desc">Tres cabezas geométricas alternan sus intervenciones siguiendo un clock de seis pulsos.</desc>
-<path d="M320 90V440M640 90V440" stroke="#303746" stroke-width="2" stroke-dasharray="5 12"/>
+<body><main class="frame">
+<svg viewBox="0 0 1080 620" role="img" aria-labelledby="title desc">
+<title id="title">Tres rostros desde diferentes ángulos discutiendo</title>
+<desc id="desc">Un rostro frontal, uno en medio perfil y otro casi de espaldas conversan por turnos.</desc>
+<rect width="1080" height="620" fill="#93d8ee"/><rect y="420" width="1080" height="200" fill="#d9b78a"/><path d="M0 420H1080" class="stroke" fill="none"/>
+<ellipse cx="180" cy="525" rx="120" ry="23" fill="#000" opacity=".16"/><ellipse cx="540" cy="525" rx="120" ry="23" fill="#000" opacity=".16"/><ellipse cx="900" cy="525" rx="120" ry="23" fill="#000" opacity=".16"/>
 
-<g id="front" class="face front">
- <text class="caption" x="170" y="80">FRENTE</text>
- <path d="M94 365Q67 292 85 205Q105 119 170 112Q235 119 255 205Q273 292 246 365Q217 405 170 408Q123 405 94 365"/>
- <path d="M170 186v78l-18 16h36"/>
- <circle class="eye" cx="130" cy="211" r="7"/><circle class="eye" cx="210" cy="211" r="7"/>
- <path class="brow" d="M109 188l38-4M193 184l38 4"/>
- <g class="jaw"><path d="M117 329Q170 365 223 329"/></g><g class="mouth"><path d="M137 321Q170 310 203 321"/></g>
- <circle class="node" cx="170" cy="321" r="8"/>
- <g class="sound"><path d="M99 303l-26 7M241 303l26 7"/></g>
+<!-- FRENTE: simetría, dos ojos y nariz central -->
+<g id="front" class="person" transform="translate(180 500)">
+ <text class="title" x="0" y="-420">FRENTE</text>
+ <path d="M-100 0Q-92-105-80-180Q0-225 80-180Q92-105 100 0Z" fill="#405e78" class="stroke"/>
+ <rect x="-19" y="-245" width="38" height="55" rx="13" fill="#d9a06f"/>
+ <ellipse class="skin" cx="0" cy="-306" rx="88" ry="103" fill="#d9a06f"/>
+ <path class="hair" d="M-80-337Q-64-411 5-416Q72-408 84-338Q45-366 2-363Q-42-364-80-337Z"/>
+ <ellipse class="eye" cx="-35" cy="-316" rx="15" ry="18"/><ellipse class="eye" cx="35" cy="-316" rx="15" ry="18"/>
+ <circle class="pupil" cx="-30" cy="-313" r="6"/><circle class="pupil" cx="40" cy="-313" r="6"/>
+ <g class="brow"><path d="M-58-346l38-7M20-353l38 7" class="stroke" fill="none"/></g>
+ <path d="M0-310l-12 40 14 7" class="stroke" fill="none"/>
+ <g class="jaw"><path d="M-64-257Q0-217 64-257" class="stroke" fill="none"/></g>
+ <ellipse class="mouth" cx="0" cy="-247" rx="30" ry="13" fill="#681f20" class="stroke"/>
+ <g class="sound stroke" fill="none"><path d="M-102-268l-30 7M102-268l30 7"/></g>
 </g>
 
-<g id="threequarter" class="face threequarter">
- <text class="caption" x="480" y="80">MEDIO PERFIL</text>
- <path d="M382 365Q358 291 379 197Q400 119 472 111Q542 115 575 184Q588 217 574 245"/>
- <path d="M574 245l29 25-35 13"/>
- <g class="jaw"><path d="M568 283Q590 309 563 326Q552 380 486 405Q424 406 382 365"/></g>
- <path d="M492 191l9 73-18 17h26"/>
- <circle class="eye hidden" cx="440" cy="210" r="6"/><circle class="eye" cx="530" cy="209" r="8"/>
- <path class="brow" d="M505 183q31-10 55 5"/>
- <g class="mouth"><path d="M539 305q29 12 48-2"/></g><circle class="node" cx="568" cy="283" r="8"/>
- <g class="sound"><path d="M615 278h25M614 298l30 10"/></g>
+<!-- MEDIO PERFIL: cara desplazada, un ojo dominante y nariz lateral -->
+<g id="threequarter" class="person" transform="translate(540 500)">
+ <text class="title" x="0" y="-420">MEDIO PERFIL</text>
+ <path d="M-98 0Q-91-110-75-180Q2-225 88-176Q98-92 103 0Z" fill="#5d526d" class="stroke"/>
+ <rect x="-11" y="-242" width="38" height="52" rx="13" fill="#c98f68"/>
+ <path class="skin" d="M-78-320Q-67-400 4-411Q72-410 91-341Q103-304 86-276L112-253L83-238Q65-203 10-201Q-58-205-79-275Q-90-298-78-320Z" fill="#c98f68"/>
+ <path class="hair" d="M-76-338Q-55-411 9-417Q73-409 88-344Q43-365-2-357Q-45-350-76-338Z"/>
+ <ellipse class="eye" cx="-25" cy="-311" rx="11" ry="15" opacity=".55"/><ellipse class="eye" cx="49" cy="-309" rx="16" ry="19"/>
+ <circle class="pupil" cx="-21" cy="-309" r="5" opacity=".55"/><circle class="pupil" cx="55" cy="-306" r="6"/>
+ <g class="brow"><path d="M24-342l46 3" class="stroke" fill="none"/></g>
+ <path d="M75-302l37 49-29 15" class="stroke" fill="none"/>
+ <g class="jaw"><path d="M77-236Q65-205 18-201" class="stroke" fill="none"/></g>
+ <ellipse class="mouth" cx="79" cy="-222" rx="27" ry="12" fill="#681f20" class="stroke"/>
+ <g class="sound stroke" fill="none"><path d="M121-238h34M120-218l37 12"/></g>
 </g>
 
-<g id="backprofile" class="face backprofile">
- <text class="caption" x="790" y="80">CASI DE ESPALDAS</text>
- <path d="M683 363Q650 282 680 187Q711 111 793 109Q865 114 889 189Q908 253 885 336Q865 392 803 410Q731 407 683 363"/>
- <path d="M698 190Q752 145 823 161Q861 171 883 206"/>
- <path d="M714 212q-18 62 7 118" class="hidden"/>
- <path d="M847 181q30 5 38 28q-5 39-31 42q-23-9-13-35q11-17 27-4"/>
- <circle class="eye" cx="822" cy="222" r="6"/>
- <path class="brow" d="M801 198q22-9 39 2"/>
- <g class="jaw"><path d="M835 282q30 32 12 63q-17 29-44 46"/></g>
- <g class="mouth"><path d="M842 288q20 8 31-5"/></g><circle class="node" cx="842" cy="288" r="8"/>
- <g class="sound"><path d="M885 278h24M885 299l27 8"/></g>
+<!-- CASI DE ESPALDAS: nuca y pelo dominantes; oreja y rasgos apenas visibles -->
+<g id="backprofile" class="person" transform="translate(900 500)">
+ <text class="title" x="0" y="-420">CASI DE ESPALDAS</text>
+ <path d="M-98 0Q-92-105-73-177Q0-220 78-182Q94-106 101 0Z" fill="#496b58" class="stroke"/>
+ <rect x="-8" y="-238" width="38" height="52" rx="13" fill="#b97d5b"/>
+ <ellipse class="skin" cx="0" cy="-305" rx="91" ry="105" fill="#b97d5b"/>
+ <path class="hair" d="M-87-324Q-77-397-14-414Q55-425 87-360Q103-309 72-248Q35-271 10-305Q-22-340-87-324Z"/>
+ <ellipse cx="54" cy="-303" rx="25" ry="32" fill="#b97d5b" class="skin"/>
+ <path d="M49-313q24-18 25 8q-4 23-22 18" class="stroke" fill="none"/>
+ <path d="M72-338q22 2 31 19" class="stroke" fill="none"/>
+ <ellipse class="eye" cx="88" cy="-317" rx="10" ry="13"/><circle class="pupil" cx="92" cy="-315" r="5"/>
+ <g class="brow"><path d="M75-340l24 2" class="stroke" fill="none"/></g>
+ <path d="M96-306l18 27-17 7" class="stroke" fill="none"/>
+ <g class="jaw"><path d="M93-260q3 30-26 48" class="stroke" fill="none"/></g>
+ <ellipse class="mouth" cx="94" cy="-247" rx="20" ry="10" fill="#681f20" class="stroke"/>
+ <g class="sound stroke" fill="none"><path d="M124-260h31M123-240l35 10"/></g>
 </g>
 </svg>
 <div class="clock" aria-label="Clock de seis pulsos"><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i></div>
-<div id="label" class="label" aria-live="polite">Comienza la discusión</div>
+<div id="label" class="label" aria-live="polite"></div>
 <div class="controls"><button id="toggle">Pausar</button><button id="restart">Reiniciar</button></div>
-</section></main>
 <script>
-(()=>{const faces={front:document.querySelector('#front'),threequarter:document.querySelector('#threequarter'),backprofile:document.querySelector('#backprofile')};
-const dots=[...document.querySelectorAll('.beat')],label=document.querySelector('#label'),toggle=document.querySelector('#toggle'),restart=document.querySelector('#restart');
-const states=[
-{who:['front'],text:'Habla el rostro de frente'},
-{who:['threequarter'],text:'Responde el rostro de medio perfil'},
-{who:['backprofile'],text:'Interviene el rostro casi de espaldas'},
-{who:['front','threequarter'],text:'El frente y el medio perfil se superponen'},
-{who:['backprofile'],text:'El rostro girado insiste'},
-{who:[],text:'Pausa antes de recomenzar'}];
-let beat=-1,timer,running=true;
-function render(){const s=states[beat];Object.entries(faces).forEach(([id,el])=>el.classList.toggle('speaker',s.who.includes(id)));dots.forEach((d,i)=>d.classList.toggle('on',i===beat));label.textContent='Clock '+(beat+1)+'/6 · '+s.text}
+(()=>{const faces={front:document.querySelector('#front'),threequarter:document.querySelector('#threequarter'),backprofile:document.querySelector('#backprofile')},dots=[...document.querySelectorAll('.beat')],label=document.querySelector('#label'),toggle=document.querySelector('#toggle'),restart=document.querySelector('#restart');
+const states=[{who:['front'],text:'Habla el rostro de frente'},{who:['threequarter'],text:'Responde el medio perfil'},{who:['backprofile'],text:'Interviene el rostro casi de espaldas'},{who:['front','threequarter'],text:'Dos voces se superponen'},{who:['backprofile'],text:'El rostro girado insiste'},{who:[],text:'Pausa'}];
+let beat=-1,timer,running=true;function render(){const s=states[beat];Object.entries(faces).forEach(([id,el])=>el.classList.toggle('speaker',s.who.includes(id)));dots.forEach((d,i)=>d.classList.toggle('on',i===beat));label.textContent='Clock '+(beat+1)+'/6 · '+s.text}
 function step(){beat=(beat+1)%states.length;render()}function start(){clearInterval(timer);timer=setInterval(step,950)}
-toggle.onclick=()=>{running=!running;toggle.textContent=running?'Pausar':'Continuar';running?start():clearInterval(timer)};
-restart.onclick=()=>{beat=-1;step();if(running)start()};step();start()})();
-</script></body></html>
+toggle.onclick=()=>{running=!running;toggle.textContent=running?'Pausar':'Continuar';running?start():clearInterval(timer)};restart.onclick=()=>{beat=-1;step();if(running)start()};step();start()})();
+</script></main></body></html>
