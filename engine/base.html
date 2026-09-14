@@ -3,196 +3,120 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cartoon Engine — Cuatro caballos en perspectiva</title>
+<title>Dos perfiles discutiendo — Cartoon Engine</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1018;--panel:#172131;--ink:#edf4ff;--light:#e9dfca;--dark:#151a24}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,sans-serif}
-main{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
-header{display:flex;align-items:center;gap:.7rem;padding:.75rem 1rem;background:var(--panel)}
-button{border:0;border-radius:.5rem;padding:.55rem .9rem;font:inherit;cursor:pointer}
-.clock-panel{margin-left:auto;display:flex;align-items:center;gap:.7rem}
-#clockCount{display:grid;place-items:center;width:42px;height:42px;border:2px solid #6bd8ff;border-radius:50%;font-size:22px;font-weight:800}
-#ticks{display:flex;gap:4px}
-.tick{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#29384b;color:#9fb1c5;font-size:12px;font-weight:700}
-.tick.on{background:#ffd166;color:#17202b}
-.note{color:#b9c7d8}
-#turnLabel{min-width:112px;padding:.42rem .65rem;border-radius:.45rem;background:#26364a;text-align:center;font-weight:750}
-svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0 39%,#101720 39%)}
-.board-edge{fill:#221b16;stroke:#b88d57;stroke-width:5}
-.label{fill:#cbd7e4;font-size:15px;font-weight:700;text-anchor:middle}
-.shadow{fill:#05080d;opacity:.35}
-.piece{color:#fff}
-.dark-piece{color:#050505;filter:drop-shadow(0 0 1.5px #dfe7f1)}
-.light-piece{color:#fff;filter:drop-shadow(0 0 1.5px #202734)}
-.piece .horse-line{fill:none;stroke:currentColor;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
-.piece .horse-detail{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}
-.piece .horse-node,.piece .eye,.piece .nostril{fill:currentColor;stroke-width:2}
-.dark-piece .horse-node,.dark-piece .eye,.dark-piece .nostril{stroke:#e8eef6}
-.light-piece .horse-node,.light-piece .eye,.light-piece .nostril{stroke:#202734}
-.route-dark,.route-light{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:7 8;opacity:.55}
-.route-dark{stroke:#66d3ff}.route-light{stroke:#fff0be}
+  :root { color-scheme: dark; --ink:#f5f2e9; --muted:#8d96a8; --left:#ff5a4f; --right:#56b8ff; --panel:#151922; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; background:#090b10; color:var(--ink); font:15px/1.35 system-ui,sans-serif; }
+  main { width:min(920px,100%); padding:18px; }
+  .stage { position:relative; overflow:hidden; border:1px solid #2b3240; border-radius:22px; background:radial-gradient(circle at 50% 42%,#202633 0,#11151d 54%,#0b0e14 100%); }
+  svg { display:block; width:100%; height:auto; }
+  .face { fill:none; stroke:currentColor; stroke-width:7; stroke-linecap:round; stroke-linejoin:round; }
+  .left { color:var(--left); transform-origin:250px 260px; }
+  .right { color:var(--right); transform-origin:650px 260px; }
+  .node { fill:#0d1016; stroke:currentColor; stroke-width:5; }
+  .eye { fill:currentColor; }
+  .mouth { transform-box:fill-box; transform-origin:center; }
+  .brow,.jaw,.head { transition:transform 160ms ease; }
+  .speaker .jaw { transform:translateY(8px); }
+  .speaker .brow { transform:translateY(-5px) rotate(-8deg); }
+  .speaker.head { transform:translateX(6px) rotate(1.8deg); }
+  .right.speaker .brow { transform:translateY(-5px) rotate(8deg); }
+  .right.speaker.head { transform:translateX(-6px) rotate(-1.8deg); }
+  .speaker .mouth { animation:talk .26s steps(2,end) infinite; }
+  .overlap .mouth { animation-duration:.18s; }
+  @keyframes talk { 50% { transform:scaleY(1.8); } }
+  .sound { opacity:0; stroke:currentColor; stroke-width:5; stroke-linecap:round; transition:opacity 120ms ease; }
+  .speaker .sound { opacity:1; animation:pulse .52s ease-in-out infinite alternate; }
+  @keyframes pulse { to { opacity:.35; transform:translateX(5px); } }
+  .right .sound { transform-origin:center; }
+  .clock { display:flex; justify-content:center; gap:9px; padding:14px 12px 4px; }
+  .beat { width:13px; height:13px; border-radius:50%; background:#303746; border:2px solid #596174; }
+  .beat.on { background:#fff; border-color:#fff; box-shadow:0 0 14px #fff8; }
+  .label { min-height:24px; text-align:center; color:#cbd1dc; letter-spacing:.04em; }
+  .controls { display:flex; justify-content:center; gap:10px; padding:12px; }
+  button { border:1px solid #384052; border-radius:999px; padding:8px 15px; background:#1a202b; color:var(--ink); cursor:pointer; }
+  button:hover { background:#252d3a; }
+  @media (prefers-reduced-motion:reduce) { .mouth,.sound { animation:none!important; } }
 </style>
 </head>
 <body>
 <main>
-<header>
-<button id="toggle">Pausa</button>
-<button id="restart">Reiniciar</button>
-<span class="note">Todos comienzan hacia la derecha · luego rebotan</span>
-<output id="turnLabel">Turno blancas</output>
-<div class="clock-panel">
-  <div id="ticks"></div>
-  <output id="clockCount">1</output>
-</div>
-</header>
-<svg viewBox="0 0 960 560" role="img" aria-label="Cuatro caballos de dos colores recorren un tablero de ajedrez en perspectiva sin rotar ni cambiar de tamaño">
-<g id="board"></g>
-<polyline id="darkRoute" class="route-dark"/>
-<polyline id="darkRoute2" class="route-dark"/>
-<polyline id="lightRoute" class="route-light"/>
-<polyline id="lightRoute2" class="route-light"/>
-<defs>
-  <g id="knightProfile">
-    <ellipse class="shadow" cx="0" cy="22" rx="43" ry="8"/>
-
-    <!-- Tronco: cadera y hombro -->
-    <path class="horse-line" d="M-24-24 L19-24"/>
-
-    <!-- Cuello, cabeza, hocico y oreja -->
-    <path class="horse-line" d="M19-24 L31-49 L47-55 L58-48 L47-39 L31-40 L19-24"/>
-    <path class="horse-detail" d="M37-53 L39-67 L47-55"/>
-
-    <!-- Cola -->
-    <path class="horse-line" d="M-24-24 L-43-35 L-54-27"/>
-
-    <!-- Dos patas traseras -->
-    <path class="horse-line" d="M-24-24 L-28-1 L-31 21 M-13-24 L-10 0 L-8 21"/>
-
-    <!-- Dos patas delanteras -->
-    <path class="horse-line" d="M10-24 L8 0 L7 21 M19-24 L25-1 L29 21"/>
-
-    <!-- Puntos estructurales, como articulaciones de una persona -->
-    <circle class="horse-node" cx="-24" cy="-24" r="6"/>
-    <circle class="horse-node" cx="19" cy="-24" r="6"/>
-    <circle class="horse-node" cx="31" cy="-49" r="6"/>
-    <circle class="horse-node" cx="47" cy="-55" r="7"/>
-    <circle class="horse-node" cx="58" cy="-48" r="5"/>
-    <circle class="horse-node" cx="-28" cy="-1" r="5"/>
-    <circle class="horse-node" cx="-31" cy="21" r="5"/>
-    <circle class="horse-node" cx="-10" cy="0" r="5"/>
-    <circle class="horse-node" cx="-8" cy="21" r="5"/>
-    <circle class="horse-node" cx="8" cy="0" r="5"/>
-    <circle class="horse-node" cx="7" cy="21" r="5"/>
-    <circle class="horse-node" cx="25" cy="-1" r="5"/>
-    <circle class="horse-node" cx="29" cy="21" r="5"/>
-    <circle class="horse-node" cx="-43" cy="-35" r="4.5"/>
-    <circle class="eye" cx="49" cy="-57" r="2.8"/>
-    <circle class="nostril" cx="57" cy="-48" r="2"/>
-  </g>
-</defs>
-<g id="darkKnight" class="piece dark-piece"><use href="#knightProfile"/></g>
-<g id="darkKnight2" class="piece dark-piece"><use href="#knightProfile"/></g>
-<g id="lightKnight" class="piece light-piece"><use href="#knightProfile"/></g>
-<g id="lightKnight2" class="piece light-piece"><use href="#knightProfile"/></g>
-</svg>
+  <section class="stage" aria-label="Dos rostros de perfil enfrentados discutiendo">
+    <svg viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+      <title id="title">Dos perfiles discutiendo</title>
+      <desc id="desc">Dos rostros construidos con líneas y puntos alternan sus intervenciones siguiendo cinco pulsos.</desc>
+      <path d="M450 76V440" stroke="#303746" stroke-width="2" stroke-dasharray="6 12"/>
+      <g id="leftFace" class="face left head">
+        <path d="M128 414 Q107 342 120 265 Q132 178 211 132 Q277 95 339 132 Q372 151 378 191"/>
+        <path d="M378 191 L361 232 L397 253 L365 274"/>
+        <g class="jaw"><path d="M365 274 Q392 296 360 314 L329 321 Q371 345 334 379 Q299 411 248 414"/></g>
+        <circle class="node" cx="365" cy="274" r="9"/>
+        <circle class="eye" cx="333" cy="220" r="7"/>
+        <path class="brow" d="M310 197 Q337 184 360 196"/>
+        <g class="mouth"><path d="M342 292 Q365 300 383 290"/></g>
+        <g class="sound"><path d="M412 274h20"/><path d="M410 294l27 10"/></g>
+      </g>
+      <g id="rightFace" class="face right head">
+        <path d="M772 414 Q793 342 780 265 Q768 178 689 132 Q623 95 561 132 Q528 151 522 191"/>
+        <path d="M522 191 L539 232 L503 253 L535 274"/>
+        <g class="jaw"><path d="M535 274 Q508 296 540 314 L571 321 Q529 345 566 379 Q601 411 652 414"/></g>
+        <circle class="node" cx="535" cy="274" r="9"/>
+        <circle class="eye" cx="567" cy="220" r="7"/>
+        <path class="brow" d="M590 197 Q563 184 540 196"/>
+        <g class="mouth"><path d="M558 292 Q535 300 517 290"/></g>
+        <g class="sound"><path d="M488 274h-20"/><path d="M490 294l-27 10"/></g>
+      </g>
+    </svg>
+    <div class="clock" aria-label="Clock de cinco pulsos">
+      <i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i>
+    </div>
+    <div id="label" class="label" aria-live="polite">Empieza la discusión</div>
+    <div class="controls">
+      <button id="toggle" type="button">Pausar</button>
+      <button id="restart" type="button">Reiniciar</button>
+    </div>
+  </section>
 </main>
 <script>
-const $=id=>document.getElementById(id);
-const NS="http://www.w3.org/2000/svg";
-const corners={backLeft:[330,90],backRight:[630,90],frontLeft:[70,500],frontRight:[890,500]};
-// Caballos izquierdos: 2 a la derecha + 1 hacia adelante; luego rebotan.
-const lightPath=["B1","D2","F3","H4","F5","D6","B7"];
-const darkPath=["B8","D7","F6","H5","F4","D3","B2"];
-// Caballos derechos: 1 a la derecha + 2 hacia adelante; luego 1 a la izquierda + 2 hacia adelante.
-const lightPath2=["G1","H3","G5","H7","F8"];
-const darkPath2=["G8","H6","G4","H2","F1"];
-const state={running:true,origin:performance.now(),pausedAt:0,tickDuration:.8,moveDuration:.55};
+(() => {
+  const left = document.querySelector('#leftFace');
+  const right = document.querySelector('#rightFace');
+  const beats = [...document.querySelectorAll('.beat')];
+  const label = document.querySelector('#label');
+  const toggle = document.querySelector('#toggle');
+  const restart = document.querySelector('#restart');
+  const states = [
+    { who:'left', text:'Habla el perfil rojo' },
+    { who:'right', text:'Responde el perfil azul' },
+    { who:'both', text:'Los dos hablan a la vez' },
+    { who:'right', text:'El perfil azul remarca su respuesta' },
+    { who:'none', text:'Pausa' }
+  ];
+  let beat = -1;
+  let timer;
+  let running = true;
 
-function mix(a,b,t){return a+(b-a)*t}
-function surfacePoint(u,v){
- const left=[mix(corners.backLeft[0],corners.frontLeft[0],v),mix(corners.backLeft[1],corners.frontLeft[1],v)];
- const right=[mix(corners.backRight[0],corners.frontRight[0],v),mix(corners.backRight[1],corners.frontRight[1],v)];
- return [mix(left[0],right[0],u),mix(left[1],right[1],u)];
-}
-function cellPoint(name){
- const col=name.charCodeAt(0)-65;
- const row=Number(name.slice(1))-1;
- return surfacePoint((col+.5)/8,1-(row+.5)/8);
-}
-function add(tag,attrs,parent){
- const node=document.createElementNS(NS,tag);
- for(const [key,value] of Object.entries(attrs)) node.setAttribute(key,value);
- parent.appendChild(node);return node;
-}
-function drawBoard(){
- const board=$("board");
- add("polygon",{class:"board-edge",points:[corners.backLeft,corners.backRight,corners.frontRight,corners.frontLeft].map(p=>p.join(",")).join(" ")},board);
- for(let row=0;row<8;row++) for(let col=0;col<8;col++){
-   const u0=col/8,u1=(col+1)/8,v0=row/8,v1=(row+1)/8;
-   const points=[surfacePoint(u0,v0),surfacePoint(u1,v0),surfacePoint(u1,v1),surfacePoint(u0,v1)];
-   add("polygon",{points:points.map(p=>p.join(",")).join(" "),fill:(row+col)%2?"#b6895c":"#ead8b9",stroke:"#614a35","stroke-width":".7"},board);
- }
- for(let col=0;col<8;col++){
-   const p=surfacePoint((col+.5)/8,1.035);
-   const t=add("text",{x:p[0],y:p[1]+17,class:"label"},board);t.textContent=String.fromCharCode(65+col);
- }
- for(let row=0;row<8;row++){
-   const p=surfacePoint(-.035,1-(row+.5)/8);
-   const t=add("text",{x:p[0]-8,y:p[1]+5,class:"label"},board);t.textContent=row+1;
- }
- $("darkRoute").setAttribute("points",darkPath.map(cellPoint).map(p=>p.join(",")).join(" "));
- $("darkRoute2").setAttribute("points",darkPath2.map(cellPoint).map(p=>p.join(",")).join(" "));
- $("lightRoute").setAttribute("points",lightPath.map(cellPoint).map(p=>p.join(",")).join(" "));
- $("lightRoute2").setAttribute("points",lightPath2.map(cellPoint).map(p=>p.join(",")).join(" "));
-}
-function smooth(t){return t*t*(3-2*t)}
-function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
-function pingPongPoint(path,index){
- const span=path.length-1;
- const phase=((index%(span*2))+(span*2))%(span*2);
- return cellPoint(path[phase<=span?phase:span*2-phase]);
-}
-function clockDrivenPosition(path,t,eventBeat){
- const d=state.tickDuration;
- const firstStart=(eventBeat-1)*d;
- if(t<firstStart){const [x,y]=pingPongPoint(path,0);return{x,y}}
- const eventIndex=Math.floor((t-firstStart)/(5*d));
- const eventStart=firstStart+eventIndex*5*d;
- const progress=smooth(clamp((t-eventStart)/state.moveDuration,0,1));
- const a=pingPongPoint(path,eventIndex),b=pingPongPoint(path,eventIndex+1);
- return{x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)};
-}
-function updateClock(t){
- const count=Math.floor(t/state.tickDuration)%5+1;
- $("clockCount").value=count===5?"—":count;
- $("turnLabel").value=count===5?"Pausa":count%2?"Turno blancas":"Turno negras";
- document.querySelectorAll(".tick").forEach((node,i)=>node.classList.toggle("on",i+1===count));
-}
-function render(t){
- updateClock(t);
- const light=clockDrivenPosition(lightPath,t,1);
- const dark=clockDrivenPosition(darkPath,t,2);
- const light2=clockDrivenPosition(lightPath2,t,3);
- const dark2=clockDrivenPosition(darkPath2,t,4);
- // Invariante: los cuatro transforms contienen solamente traslación.
- $("darkKnight").setAttribute("transform",`translate(${dark.x} ${dark.y})`);
- $("darkKnight2").setAttribute("transform",`translate(${dark2.x} ${dark2.y})`);
- $("lightKnight").setAttribute("transform",`translate(${light.x} ${light.y})`);
- $("lightKnight2").setAttribute("transform",`translate(${light2.x} ${light2.y})`);
-}
-function frame(now){
- if(state.running){state.pausedAt=(now-state.origin)/1000;render(state.pausedAt)}
- requestAnimationFrame(frame);
-}
-$("toggle").onclick=()=>{
- state.running=!state.running;
- if(state.running){state.origin=performance.now()-state.pausedAt*1000;$("toggle").textContent="Pausa"}
- else $("toggle").textContent="Continuar";
-};
-$("restart").onclick=()=>{state.origin=performance.now();state.pausedAt=0;state.running=true;$("toggle").textContent="Pausa";render(0)};
-for(let i=1;i<=5;i++){const node=add("span",{class:"tick"},$("ticks"));node.textContent=i===5?"—":i}
-drawBoard();render(0);requestAnimationFrame(frame);
+  function render() {
+    const state = states[beat];
+    left.classList.toggle('speaker', state.who === 'left' || state.who === 'both');
+    right.classList.toggle('speaker', state.who === 'right' || state.who === 'both');
+    left.classList.toggle('overlap', state.who === 'both');
+    right.classList.toggle('overlap', state.who === 'both');
+    beats.forEach((dot, i) => dot.classList.toggle('on', i === beat));
+    label.textContent = 'Clock ' + (beat + 1) + '/5 · ' + state.text;
+  }
+  function step() { beat = (beat + 1) % states.length; render(); }
+  function start() { clearInterval(timer); timer = setInterval(step, 900); }
+  toggle.addEventListener('click', () => {
+    running = !running;
+    toggle.textContent = running ? 'Pausar' : 'Continuar';
+    if (running) start(); else clearInterval(timer);
+  });
+  restart.addEventListener('click', () => { beat = -1; step(); if (running) start(); });
+  step();
+  start();
+})();
 </script>
 </body>
 </html>
