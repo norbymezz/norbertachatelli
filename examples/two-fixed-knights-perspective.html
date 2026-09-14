@@ -11,7 +11,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,sans-ser
 main{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
 header{display:flex;align-items:center;gap:.7rem;padding:.75rem 1rem;background:var(--panel)}
 button{border:0;border-radius:.5rem;padding:.55rem .9rem;font:inherit;cursor:pointer}
-.note{margin-left:auto;color:#b9c7d8}
+.clock-panel{margin-left:auto;display:flex;align-items:center;gap:.7rem}
+#clockCount{display:grid;place-items:center;width:42px;height:42px;border:2px solid #6bd8ff;border-radius:50%;font-size:22px;font-weight:800}
+#ticks{display:flex;gap:4px}
+.tick{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#29384b;color:#9fb1c5;font-size:12px;font-weight:700}
+.tick.on{background:#ffd166;color:#17202b}
+.note{color:#b9c7d8}
 svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0 39%,#101720 39%)}
 .board-edge{fill:#221b16;stroke:#b88d57;stroke-width:5}
 .label{fill:#cbd7e4;font-size:15px;font-weight:700;text-anchor:middle}
@@ -27,7 +32,11 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <header>
 <button id="toggle">Pausa</button>
 <button id="restart">Reiniciar</button>
-<span class="note">Sólo traslación · orientación y tamaño constantes</span>
+<span class="note">El oscuro se mueve en 4 · el claro en 8</span>
+<div class="clock-panel">
+  <div id="ticks"></div>
+  <output id="clockCount">1</output>
+</div>
 </header>
 <svg viewBox="0 0 960 560" role="img" aria-label="Dos caballos de distinto color recorren un tablero de ajedrez en perspectiva sin rotar ni cambiar de tamaño">
 <g id="board"></g>
@@ -51,7 +60,7 @@ const NS="http://www.w3.org/2000/svg";
 const corners={backLeft:[330,90],backRight:[630,90],frontLeft:[70,500],frontRight:[890,500]};
 const darkPath=["B1","C3","E4","F6","H5"];
 const lightPath=["G8","E7","C8","B6","D5"];
-const state={running:true,origin:performance.now(),pausedAt:0,secondsPerMove:1.45,hold:.22};
+const state={running:true,origin:performance.now(),pausedAt:0,tickDuration:.8,moveDuration:.55};
 
 function mix(a,b,t){return a+(b-a)*t}
 function surfacePoint(u,v){
@@ -89,22 +98,34 @@ function drawBoard(){
  $("lightRoute").setAttribute("points",lightPath.map(cellPoint).map(p=>p.join(",")).join(" "));
 }
 function smooth(t){return t*t*(3-2*t)}
-function pathPosition(path,t,delay=0){
- const local=Math.max(0,t-delay);
- const unit=state.secondsPerMove+state.hold;
- const leg=Math.min(path.length-2,Math.floor(local/unit));
- const within=local-leg*unit;
- const progress=smooth(Math.min(1,within/state.secondsPerMove));
- const a=cellPoint(path[leg]),b=cellPoint(path[leg+1]);
- return {x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress),done:local>=(path.length-1)*unit};
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function pingPongPoint(path,index){
+ const span=path.length-1;
+ const phase=((index%(span*2))+(span*2))%(span*2);
+ return cellPoint(path[phase<=span?phase:span*2-phase]);
+}
+function clockDrivenPosition(path,t,eventTick){
+ const d=state.tickDuration;
+ const firstStart=(eventTick-1)*d;
+ if(t<firstStart){const [x,y]=pingPongPoint(path,0);return{x,y}}
+ const eventIndex=Math.floor((t-firstStart)/(8*d));
+ const eventStart=firstStart+eventIndex*8*d;
+ const progress=smooth(clamp((t-eventStart)/state.moveDuration,0,1));
+ const a=pingPongPoint(path,eventIndex),b=pingPongPoint(path,eventIndex+1);
+ return{x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)};
+}
+function updateClock(t){
+ const count=Math.floor(t/state.tickDuration)%8+1;
+ $("clockCount").value=count;
+ document.querySelectorAll(".tick").forEach((node,i)=>node.classList.toggle("on",i+1===count));
 }
 function render(t){
- const dark=pathPosition(darkPath,t,0);
- const light=pathPosition(lightPath,t,.65);
- // Invariante deliberada: ambos transforms contienen sólo translate.
+ updateClock(t);
+ const dark=clockDrivenPosition(darkPath,t,4);
+ const light=clockDrivenPosition(lightPath,t,8);
+ // Invariante: los transforms contienen solamente traslación.
  $("darkKnight").setAttribute("transform",`translate(${dark.x} ${dark.y})`);
  $("lightKnight").setAttribute("transform",`translate(${light.x} ${light.y})`);
- if(dark.done&&light.done){state.running=false;$("toggle").textContent="Continuar"}
 }
 function frame(now){
  if(state.running){state.pausedAt=(now-state.origin)/1000;render(state.pausedAt)}
@@ -116,6 +137,7 @@ $("toggle").onclick=()=>{
  else $("toggle").textContent="Continuar";
 };
 $("restart").onclick=()=>{state.origin=performance.now();state.pausedAt=0;state.running=true;$("toggle").textContent="Pausa";render(0)};
+for(let i=1;i<=8;i++){const node=add("span",{class:"tick"},$("ticks"));node.textContent=i}
 drawBoard();render(0);requestAnimationFrame(frame);
 </script>
 </body>
