@@ -29,7 +29,7 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Primer recorrido: B8 → A6 → B4 → C2 → D4 → E2</span>
+<span class="note">B8 → A6 → B4 → C2 → D4 → E2 · después del pulso 5 sigue el próximo personaje</span>
 <output id="turnLabel">Turno negras</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
@@ -134,7 +134,7 @@ function buildTimeline(length){
     const velocity=velocities[pending.index];
     if(!pending.reflectedX&&(pending.target[0]===0||pending.target[0]===7))velocity[0]*=-1;
     if(!pending.reflectedY&&(pending.target[1]===0||pending.target[1]===7))velocity[1]*=-1;
-    nextPiece=(pending.index+1)%pieces.length;pending=null;
+    pending=null;
    }
   }else if(!pending){
    const index=nextPiece,current=positions[index],velocity=velocities[index],proposal=[current[0]+velocity[0],current[1]+velocity[1]];
@@ -142,6 +142,7 @@ function buildTimeline(length){
    if(outsideX||outsideY){
     const rebound=[outsideX?-velocity[0]:velocity[0],outsideY?-velocity[1]:velocity[1]];
     pending={index,target:[current[0]+rebound[0],current[1]+rebound[1]],reflectedX:outsideX,reflectedY:outsideY};
+    nextPiece=(index+1)%pieces.length;
    }else{
     positions[index]=proposal;actor=index;nextPiece=(nextPiece+1)%pieces.length;
     if(proposal[0]===0||proposal[0]===7)velocity[0]*=-1;
