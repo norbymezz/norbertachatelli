@@ -6,6 +6,7 @@ Motor incremental de animación basado en HTML, SVG y JavaScript, sin dependenci
 
 | Ejemplo | Ejecutar | Código |
 |---|---|---|
+| Secuencia esquemática de tamaños de plano (video 00:30–01:00) | [▶ Ver animación](https://htmlpreview.github.io/?https://github.com/norbymezz/norbertachatelli/blob/main/examples/video-shot-scales-30-60.html) | [Ver código](examples/video-shot-scales-30-60.html) |
 | Plano y contraplano expresado sólo con formas de boca | [▶ Ver animación](https://htmlpreview.github.io/?https://github.com/norbymezz/norbertachatelli/blob/main/examples/courtroom-shot-reverse-shot.html) | [Ver código](examples/courtroom-shot-reverse-shot.html) |
 | Tres rostros en distintas orientaciones discutiendo | [▶ Ver animación](https://htmlpreview.github.io/?https://github.com/norbymezz/norbertachatelli/blob/main/examples/three-face-angles-arguing.html) | [Ver código](examples/three-face-angles-arguing.html) |
 | Dos rostros de perfil discutiendo por turnos | [▶ Ver animación](https://htmlpreview.github.io/?https://github.com/norbymezz/norbertachatelli/blob/main/examples/two-profiles-arguing.html) | [Ver código](examples/two-profiles-arguing.html) |
