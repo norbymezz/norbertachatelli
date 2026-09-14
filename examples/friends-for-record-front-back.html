@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Friends · For the record / Front and back</title>
+<script>if(new URLSearchParams(location.search).get("embed")==="1")document.documentElement.classList.add("embed")</script>
 <style>
 :root{color-scheme:dark;--bg:#111923;--panel:#192538;--line:#f5f7fa;--skin:#d49b72;--ross:#496d91;--rachel:#b35663;--beat:#ffd166}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:#eef3f8;font:15px system-ui,sans-serif}
@@ -11,6 +12,14 @@ svg{display:block;width:100%;height:auto;background:#a88970}.shot{opacity:0;tran
 .tag{fill:#fff;font:800 20px system-ui;paint-order:stroke;stroke:#111;stroke-width:7}.note{font-size:14px;fill:#e7edf5}
 .clock{display:flex;gap:8px;justify-content:center;padding:12px 12px 4px}.dot{width:13px;height:13px;border-radius:50%;background:#3a485d}.dot.on{background:var(--beat);box-shadow:0 0 12px #ffd166aa}
 .info{display:grid;grid-template-columns:1fr auto;gap:10px;padding:8px 18px}.name{font-weight:800;font-size:18px}.dialog{color:#c5cfdd}.count{font-size:24px;color:var(--beat);font-weight:900}.controls{display:flex;gap:9px;padding:10px 18px 17px}button{border:1px solid #52637a;background:#29384c;color:white;border-radius:999px;padding:9px 16px}
+html.embed,html.embed body{background:transparent}
+html.embed body{min-height:100vh;display:block}
+html.embed main{width:100%;height:100vh;padding:0}
+html.embed .card{height:100%;border-radius:0;background:transparent;box-shadow:none}
+html.embed header,html.embed .clock,html.embed .info,html.embed .controls{display:none}
+html.embed svg{width:100%;height:100%;background:transparent}
+html.embed #wideRoom>rect,html.embed #rossClose>rect,html.embed #rachelClose>rect{opacity:.16}
+html.embed #wideRoom>path{opacity:.22}
 </style></head><body><main><section class="card">
 <header><h1>“For the record…” → “front and back”</h1><div class="sub">Alternancia esquemática de planos · dormitorio → living</div></header>
 <svg viewBox="0 0 1000 560" aria-label="Ross y Rachel discuten alternando planos">
@@ -36,7 +45,7 @@ svg{display:block;width:100%;height:auto;background:#a88970}.shot{opacity:0;tran
  {shot:"rossClose",speaker:"rossFace",plan:"Primer plano · Ross",camera:"Corte directo",name:"Ross",dialog:"Confiesa que se quedó dormido."},
  {shot:"rachelClose",speaker:"rachelFace",plan:"Primer plano · Rachel",camera:"Corte directo",name:"Rachel",dialog:"Repite la confesión, cada vez más enojada."},
  {shot:"wide",speaker:"rossWide",plan:"Plano conjunto en desplazamiento",camera:"Reencuadre lateral hacia el living",name:"Ross",dialog:"Se justifica por la hora y la extensión de la carta: dieciocho páginas, frente y dorso.",move:true}
-],shots=[...document.querySelectorAll(".shot")],clock=document.querySelector("#clock"),plan=document.querySelector("#plan"),camera=document.querySelector("#camera"),name=document.querySelector("#name"),dialog=document.querySelector("#dialog"),count=document.querySelector("#count"),wideRoom=document.querySelector("#wideRoom");states.forEach(()=>clock.append(Object.assign(document.createElement("i"),{className:"dot"})));let i=0,running=true,timer;
+],shots=[...document.querySelectorAll(".shot")],clock=document.querySelector("#clock"),plan=document.querySelector("#plan"),camera=document.querySelector("#camera"),name=document.querySelector("#name"),dialog=document.querySelector("#dialog"),count=document.querySelector("#count"),wideRoom=document.querySelector("#wideRoom");states.forEach(()=>clock.append(Object.assign(document.createElement("i"),{className:"dot"})));const launch=new URLSearchParams(location.search);let i=0,running=launch.get("autoplay")!=="0",timer;
 function render(){const s=states[i];shots.forEach(x=>x.classList.toggle("active",x.id===s.shot));document.querySelectorAll("#rossWide,#rachelWide,#rossFace,#rachelFace").forEach(x=>x.classList.toggle("talk",x.id===s.speaker));[...clock.children].forEach((d,n)=>d.classList.toggle("on",n===i));plan.textContent=s.plan;camera.textContent=s.camera;name.textContent=s.name;dialog.textContent=s.dialog;count.textContent=i+1;wideRoom.style.transform=s.move?"translateX(-95px)":"translateX(0)"}
-function start(){clearInterval(timer);timer=setInterval(()=>{i=(i+1)%states.length;render()},1900)}document.querySelector("#toggle").onclick=e=>{running=!running;e.target.textContent=running?"Pausar":"Continuar";running?start():clearInterval(timer)};document.querySelector("#restart").onclick=()=>{i=0;render();if(running)start()};render();start()})();
+function start(){clearInterval(timer);timer=setInterval(()=>{i=(i+1)%states.length;render()},1900)}document.querySelector("#toggle").onclick=e=>{running=!running;e.target.textContent=running?"Pausar":"Continuar";running?start():clearInterval(timer)};document.querySelector("#restart").onclick=()=>{i=0;render();if(running)start()};toggle.textContent=running?"Pausar":"Continuar";render();if(running)start();window.addEventListener("message",event=>{ const command=event.data;if(!command||command.type!=="uizador-guide")return; if(command.action==="start"||command.action==="restart"){i=0;render();running=true;toggle.textContent="Pausar";start()} else if(command.action==="pause"){running=false;clearInterval(timer);toggle.textContent="Continuar"} else if(command.action==="reset"){running=false;clearInterval(timer);i=0;render();toggle.textContent="Continuar"}});})();
 </script></body></html>
