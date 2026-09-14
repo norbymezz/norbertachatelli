@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cartoon Engine — Base</title>
+<style>
+  :root{color-scheme:dark;--bg:#10141c;--panel:#1a2230;--ink:#eef4ff;--accent:#62d6ff}
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,sans-serif}
+  main{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
+  header{display:flex;gap:.7rem;align-items:center;padding:.8rem 1rem;background:var(--panel)}
+  button{border:0;border-radius:.5rem;padding:.55rem .9rem;font:inherit;cursor:pointer}
+  output{margin-left:auto;font-variant-numeric:tabular-nums}
+  svg{width:100%;height:100%;min-height:420px;background:linear-gradient(#182231,#0d1219)}
+  .bone{stroke:var(--ink);stroke-width:12;stroke-linecap:round;fill:none}
+  .joint{fill:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <button id="toggle">Pausa</button>
+  <button id="reset">Reiniciar</button>
+  <output id="clock"></output>
+</header>
+<svg id="stage" viewBox="0 0 800 450" role="img" aria-label="Esqueleto geométrico animado">
+  <line x1="0" y1="390" x2="800" y2="390" stroke="#314155" stroke-width="3"/>
+  <g id="actor" transform="translate(400 225)">
+    <circle cx="0" cy="-90" r="38" fill="#ffc56f"/>
+    <line class="bone" x1="0" y1="-50" x2="0" y2="75"/>
+    <g id="leftArm" transform="translate(0 -30) rotate(25)">
+      <line class="bone" x1="0" y1="0" x2="-75" y2="55"/>
+      <circle class="joint" cx="-75" cy="55" r="8"/>
+    </g>
+    <g id="rightArm" transform="translate(0 -30) rotate(-25)">
+      <line class="bone" x1="0" y1="0" x2="75" y2="55"/>
+      <circle class="joint" cx="75" cy="55" r="8"/>
+    </g>
+    <line class="bone" x1="0" y1="75" x2="-42" y2="160"/>
+    <line class="bone" x1="0" y1="75" x2="42" y2="160"/>
+  </g>
+</svg>
+</main>
+<script>
+const state={running:true,origin:performance.now(),pausedAt:0,slowRate:.18,pulseHz:1};
+const params={bodyY:0,leftArmAngle:25,rightArmAngle:-25};
+const clocks={
+  physical:t=>t,
+  pulse:t=>Math.sin(t*Math.PI*2*state.pulseHz),
+  slow:t=>t*state.slowRate
+};
+const transitions=[
+  {source:"pulse",target:"bodyY",gain:8,offset:0},
+  {source:"pulse",target:"leftArmAngle",gain:10,offset:25},
+  {source:"pulse",target:"rightArmAngle",gain:-10,offset:-25}
+];
+const $=id=>document.getElementById(id);
+function applyTransitions(t){
+  for(const tr of transitions) params[tr.target]=clocks[tr.source](t)*tr.gain+tr.offset;
+}
+function render(t){
+  applyTransitions(t);
+  $("actor").setAttribute("transform",`translate(400 ${225+params.bodyY})`);
+  $("leftArm").setAttribute("transform",`translate(0 -30) rotate(${params.leftArmAngle})`);
+  $("rightArm").setAttribute("transform",`translate(0 -30) rotate(${params.rightArmAngle})`);
+  $("clock").value=`physical ${t.toFixed(2)} · pulse ${clocks.pulse(t).toFixed(2)} · slow ${clocks.slow(t).toFixed(2)}`;
+}
+function frame(now){
+  if(state.running){
+    const t=(now-state.origin)/1000;
+    state.pausedAt=t; render(t);
+  }
+  requestAnimationFrame(frame);
+}
+$("toggle").onclick=()=>{
+  state.running=!state.running;
+  if(state.running){state.origin=performance.now()-state.pausedAt*1000;$("toggle").textContent="Pausa"}
+  else $("toggle").textContent="Continuar";
+};
+$("reset").onclick=()=>{state.origin=performance.now();state.pausedAt=0;render(0)};
+render(0);requestAnimationFrame(frame);
+</script>
+</body>
+</html>
