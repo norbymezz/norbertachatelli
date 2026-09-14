@@ -32,21 +32,34 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <svg viewBox="0 0 960 560" role="img" aria-label="Dos rostros blancos y dos negros recorren un tablero de ajedrez en perspectiva siguiendo los turnos de los caballos">
 <g id="board"></g>
 <polyline id="darkRoute" class="route-dark"/><polyline id="darkRoute2" class="route-dark"/><polyline id="lightRoute" class="route-light"/><polyline id="lightRoute2" class="route-light"/>
-<defs>
- <g id="frontFace">
-  <ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
+<g id="darkFace" class="piece dark-piece"><ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
   <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
   <path class="face-line" d="M-22-27q22-13 44 0"/>
   <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
   <path class="face-line" d="M0-7l-7 17h13"/>
   <path class="face-line" d="M-15 21q15 10 30 0"/>
-  <circle class="joint" cx="0" cy="21" r="4"/>
- </g>
-</defs>
-<g id="darkFace" class="piece dark-piece"><use href="#frontFace"/></g>
-<g id="darkFace2" class="piece dark-piece"><use href="#frontFace"/></g>
-<g id="lightFace" class="piece light-piece"><use href="#frontFace"/></g>
-<g id="lightFace2" class="piece light-piece"><use href="#frontFace"/></g>
+  <circle class="joint" cx="0" cy="21" r="4"/></g>
+<g id="darkFace2" class="piece dark-piece"><ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
+  <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
+  <path class="face-line" d="M-22-27q22-13 44 0"/>
+  <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
+  <path class="face-line" d="M0-7l-7 17h13"/>
+  <path class="face-line" d="M-15 21q15 10 30 0"/>
+  <circle class="joint" cx="0" cy="21" r="4"/></g>
+<g id="lightFace" class="piece light-piece"><ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
+  <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
+  <path class="face-line" d="M-22-27q22-13 44 0"/>
+  <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
+  <path class="face-line" d="M0-7l-7 17h13"/>
+  <path class="face-line" d="M-15 21q15 10 30 0"/>
+  <circle class="joint" cx="0" cy="21" r="4"/></g>
+<g id="lightFace2" class="piece light-piece"><ellipse class="shadow" cx="0" cy="35" rx="34" ry="8"/>
+  <ellipse class="face-head" cx="0" cy="-2" rx="34" ry="40"/>
+  <path class="face-line" d="M-22-27q22-13 44 0"/>
+  <circle class="eye" cx="-13" cy="-9" r="4.5"/><circle class="eye" cx="13" cy="-9" r="4.5"/>
+  <path class="face-line" d="M0-7l-7 17h13"/>
+  <path class="face-line" d="M-15 21q15 10 30 0"/>
+  <circle class="joint" cx="0" cy="21" r="4"/></g>
 </svg></main>
 <script>
 const $=id=>document.getElementById(id),NS="http://www.w3.org/2000/svg";
