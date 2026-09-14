@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Plano y contraplano — bocas</title>
+<script>if(new URLSearchParams(location.search).get("embed")==="1")document.documentElement.classList.add("embed")</script>
+<title>A Few Good Men — plano y contraplano</title>
 <style>
 :root{color-scheme:dark;--ink:#202126;--skin:#d8a071;--uniform:#202936;--wall:#b99778;--wood:#563327}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#111820;color:#eef3fa;font:15px system-ui,sans-serif}
@@ -15,12 +16,20 @@ svg{display:block;width:100%;height:auto}.shot{opacity:0;pointer-events:none;tra
 .caption{fill:#fff;font:800 18px system-ui,sans-serif;text-anchor:middle;paint-order:stroke;stroke:#111;stroke-width:6}
 .clock{display:flex;justify-content:center;gap:10px;padding:12px 10px 5px}.beat{width:13px;height:13px;border-radius:50%;background:#354052;border:2px solid #657187}.beat.on{background:#fff;border-color:#fff;box-shadow:0 0 13px #fff9}
 .status{text-align:center;min-height:23px;color:#cbd3df}.controls{display:flex;justify-content:center;gap:9px;padding:11px}button{padding:8px 15px;border:1px solid #526075;border-radius:999px;background:#263243;color:#fff;cursor:pointer}
+html.embed,html.embed body{background:transparent}
+html.embed body{min-height:100vh;display:block}
+html.embed main{width:100%;height:100vh;padding:0}
+html.embed .stage{height:100%;border-radius:0;background:transparent;box-shadow:none}
+html.embed .clock,html.embed .status,html.embed .controls{display:none}
+html.embed svg{width:100%;height:100%;background:transparent}
+html.embed #shotA>rect,html.embed #shotB>rect{opacity:.16}
+html.embed #shotA>path,html.embed #shotB>path{opacity:.22}
 </style>
 </head>
-<body><main><section class="stage" aria-label="Plano y contraplano de dos personas hablando mediante la forma de la boca">
+<body><main><section class="stage" aria-label="Guía esquemática de A Few Good Men mediante plano y contraplano">
 <svg viewBox="0 0 1000 590" role="img" aria-labelledby="title desc">
-<title id="title">Alternancia de plano y contraplano</title>
-<desc id="desc">Personajes geométricos de distintos tamaños alternan la palabra. Sólo cambia la forma de sus bocas.</desc>
+<title id="title">A Few Good Men — alternancia de plano y contraplano</title>
+<desc id="desc">Personajes geométricos de distintos tamaños representan un intercambio en la escena del tribunal. Sólo cambia la forma de sus bocas.</desc>
 
 <!-- PLANO A: figura principal adelante y dos figuras menores en profundidad -->
 <g id="shotA" class="shot active">
@@ -70,9 +79,15 @@ const states=[
  {shot:"B",speaker:"close",text:"Contraplano · habla el personaje cercano"},
  {shot:"A",speaker:"front",text:"Plano general · habla el personaje delantero"},
  {shot:"B",speaker:"close",text:"Contraplano · vuelve a hablar"}
-];let index=0,running=true,timer;
+],launch=new URLSearchParams(location.search);let index=0,running=launch.get("autoplay")!=="0",timer;
 function render(){const s=states[index];shotA.classList.toggle("active",s.shot==="A");shotB.classList.toggle("active",s.shot==="B");front.classList.toggle("speaker",s.speaker==="front");close.classList.toggle("speaker",s.speaker==="close");dots.forEach((d,i)=>d.classList.toggle("on",i===index));status.textContent=s.text}
 function start(){clearInterval(timer);timer=setInterval(()=>{index=(index+1)%states.length;render()},1500)}
-toggle.onclick=()=>{running=!running;toggle.textContent=running?"Pausar":"Continuar";running?start():clearInterval(timer)};
-document.querySelector("#restart").onclick=()=>{index=0;render();if(running)start()};render();start()})();
+function pause(){running=false;clearInterval(timer);toggle.textContent="Continuar"}
+function restart(){index=0;render();running=true;toggle.textContent="Pausar";start()}
+function reset(){pause();index=0;render()}
+toggle.onclick=()=>{running?pause():(running=true,toggle.textContent="Pausar",start())};
+document.querySelector("#restart").onclick=()=>{index=0;render();if(running)start()};
+toggle.textContent=running?"Pausar":"Continuar";render();if(running)start();
+window.addEventListener("message",event=>{const command=event.data;if(!command||command.type!=="uizador-guide")return;if(command.action==="start"||command.action==="restart")restart();else if(command.action==="pause")pause();else if(command.action==="reset")reset()});
+})();
 </script></body></html>

@@ -18,3 +18,4 @@ Este archivo registra únicamente decisiones ya adoptadas. Las ideas pendientes 
 - Los ejemplos destinados a guía pueden aceptar `?embed=1` para mostrar solamente el escenario y `?autoplay=0` para quedar detenidos en el primer estado.
 - El mensaje `{"type":"uizador-guide","action":"start|restart|pause|reset"}` controla el clock cuando la escena está embebida.
 - `examples/friends-for-record-front-back.html` es el primer caso conectado mediante este contrato.
+- `examples/courtroom-shot-reverse-shot.html`, basado en *A Few Good Men*, es el segundo caso y confirma que el mismo contrato sirve para otra escena.
