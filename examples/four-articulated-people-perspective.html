@@ -21,13 +21,15 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 .eye{fill:var(--feature)}.joint{fill:var(--face-fill);stroke:var(--feature);stroke-width:3}
 .bone{stroke:var(--feature);stroke-width:7;stroke-linecap:round}.body-joint{fill:var(--face-fill);stroke:var(--feature);stroke-width:3}
 .hair{fill:var(--feature);stroke:var(--face-stroke);stroke-width:3;stroke-linejoin:round}.sclera{fill:#fff;stroke:#171b23;stroke-width:2}.pupil{fill:#171b23}
+.sclera,.pupil{transform-box:fill-box;transform-origin:center;transition:transform .05s}.piece.blink .sclera,.piece.blink .pupil{transform:scaleY(.12)}
+.speech{opacity:0;pointer-events:none;transition:opacity .12s}.piece.speaking .speech{opacity:1}.speech rect{fill:#fff;stroke:#171b23;stroke-width:3}.speech text{fill:#171b23;font-size:13px;font-weight:900;text-anchor:middle}
 .route-dark,.route-light{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:7 8;opacity:.55}.route-dark{stroke:#66d3ff}.route-light{stroke:#fff0be}
 </style>
 </head>
 <body><main>
 <header>
 <button id="toggle">Pausa</button><button id="restart">Reiniciar</button>
-<span class="note">Rebote especular en los bordes · corrección interna en el quinto pulso</span>
+<span class="note">Parpadean · hablan al moverse · dicen «¡Rebote!» en el quinto pulso</span>
 <output id="turnLabel">Turno blancas</output>
 <div class="clock-panel"><div id="ticks"></div><output id="clockCount">1</output></div>
 </header>
@@ -140,13 +142,19 @@ function buildTimeline(length){
  return frames;
 }
 const timeline=buildTimeline(6000);
+const phrases=["¡Voy!","¡Ahora!","¡Salto!","¡Allá!"];
+function addSpeechBubbles(){pieces.forEach((piece,index)=>{const bubble=add("g",{class:"speech"},$(piece.id));add("rect",{x:-35,y:-143,width:70,height:27,rx:11},bubble);const text=add("text",{x:0,y:-125,class:"speech-text"},bubble);text.textContent=phrases[index]})}
 function updateClock(t,beatIndex){const count=beatIndex%5+1,recovery=count===5&&timeline[beatIndex+1].recovery;$("clockCount").value=count===5?(recovery?"↩":"—"):count;$("turnLabel").value=count===5?(recovery?"Rebote interno":"Pausa"):count%2?"Turno blancas":"Turno negras";document.querySelectorAll(".tick").forEach((node,i)=>node.classList.toggle("on",i+1===count))}
 function perspectiveScale(y){const depth=clamp((y-corners.backLeft[1])/(corners.frontLeft[1]-corners.backLeft[1]),0,1);return mix(.48,1.02,depth)}
 function render(t){const beatIndex=Math.min(Math.floor(t/state.tickDuration),timeline.length-2),beatTime=t-beatIndex*state.tickDuration,progress=smooth(clamp(beatTime/state.moveDuration,0,1));updateClock(t,beatIndex);
- pieces.forEach((piece,index)=>{const a=gridPoint(timeline[beatIndex].positions[index]),b=gridPoint(timeline[beatIndex+1].positions[index]),p={x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)},scale=perspectiveScale(p.y);$(piece.id).setAttribute("transform",`translate(${p.x} ${p.y}) scale(${scale}) translate(0 -50)`)})}
+ pieces.forEach((piece,index)=>{const startCell=timeline[beatIndex].positions[index],endCell=timeline[beatIndex+1].positions[index],a=gridPoint(startCell),b=gridPoint(endCell),p={x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)},scale=perspectiveScale(p.y),el=$(piece.id),moving=(startCell[0]!==endCell[0]||startCell[1]!==endCell[1])&&beatTime<state.moveDuration,blinkPhase=(t+index*.67)%3.1;
+  el.setAttribute("transform",`translate(${p.x} ${p.y}) scale(${scale}) translate(0 -50)`);
+  el.classList.toggle("speaking",moving);el.classList.toggle("blink",blinkPhase<.12);
+  if(moving)el.querySelector(".speech-text").textContent=beatIndex%5===4?"¡Rebote!":phrases[index]
+ })}
 function frame(now){if(state.running){state.pausedAt=(now-state.origin)/1000;render(state.pausedAt)}requestAnimationFrame(frame)}
 $("toggle").onclick=()=>{state.running=!state.running;if(state.running){state.origin=performance.now()-state.pausedAt*1000;$("toggle").textContent="Pausa"}else $("toggle").textContent="Continuar"};
 $("restart").onclick=()=>{state.origin=performance.now();state.pausedAt=0;state.running=true;$("toggle").textContent="Pausa";render(0)};
 for(let i=1;i<=5;i++){const node=document.createElement("span");node.className="tick";node.textContent=i===5?"↩":i;$("ticks").appendChild(node)}
-drawBoard();render(0);requestAnimationFrame(frame);
+addSpeechBubbles();drawBoard();render(0);requestAnimationFrame(frame);
 </script></body></html>
