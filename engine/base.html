@@ -3,73 +3,114 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Cartoon Engine — Base</title>
+<title>Cartoon Engine — Recorrido en cuadrícula 3×3</title>
 <style>
-  :root{color-scheme:dark;--bg:#10141c;--panel:#1a2230;--ink:#eef4ff;--accent:#62d6ff}
-  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,sans-serif}
-  main{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
-  header{display:flex;gap:.7rem;align-items:center;padding:.8rem 1rem;background:var(--panel)}
-  button{border:0;border-radius:.5rem;padding:.55rem .9rem;font:inherit;cursor:pointer}
-  output{margin-left:auto;font-variant-numeric:tabular-nums}
-  svg{width:100%;height:100%;min-height:420px;background:linear-gradient(#182231,#0d1219)}
-  .bone{stroke:var(--ink);stroke-width:12;stroke-linecap:round;fill:none}
-  .joint{fill:var(--accent)}
+:root{color-scheme:dark;--bg:#0d131c;--panel:#182333;--ink:#f2f6ff;--grid:#66819e;--accent:#69dcff;--path:#ffd166}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px system-ui,sans-serif}
+main{min-height:100vh;display:grid;grid-template-rows:auto 1fr}
+header{display:flex;gap:.65rem;align-items:center;padding:.75rem 1rem;background:var(--panel)}
+button{border:0;border-radius:.5rem;padding:.55rem .9rem;font:inherit;cursor:pointer}
+#route{margin-left:auto;font-weight:650;letter-spacing:.03em}
+svg{width:100%;height:100%;min-height:470px;background:linear-gradient(#1b2c40 0 45%,#101923 45%)}
+.grid-line{fill:none;stroke:var(--grid);stroke-width:2}
+.cell-label{fill:#bed0e3;font-size:20px;font-weight:700;text-anchor:middle}
+.route{fill:none;stroke:var(--path);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:10 10;opacity:.8}
+.bone{stroke:var(--ink);stroke-width:9;stroke-linecap:round}
+.joint{fill:var(--accent)}
+.marker{fill:#101923;stroke:var(--path);stroke-width:3}
+.active{fill:var(--path)}
 </style>
 </head>
 <body>
 <main>
 <header>
-  <button id="toggle">Pausa</button>
-  <button id="reset">Reiniciar</button>
-  <output id="clock"></output>
+<button id="toggle">Pausa</button>
+<button id="restart">Reiniciar</button>
+<div id="route">A1 → C2 → A3 → B1 → C3</div>
 </header>
-<svg id="stage" viewBox="0 0 800 450" role="img" aria-label="Esqueleto geométrico animado">
-  <line x1="0" y1="390" x2="800" y2="390" stroke="#314155" stroke-width="3"/>
-  <g id="actor" transform="translate(400 225)">
-    <circle cx="0" cy="-90" r="38" fill="#ffc56f"/>
-    <line class="bone" x1="0" y1="-50" x2="0" y2="75"/>
-    <g id="leftArm" transform="translate(0 -30) rotate(25)">
-      <line class="bone" x1="0" y1="0" x2="-75" y2="55"/>
-      <circle class="joint" cx="-75" cy="55" r="8"/>
-    </g>
-    <g id="rightArm" transform="translate(0 -30) rotate(-25)">
-      <line class="bone" x1="0" y1="0" x2="75" y2="55"/>
-      <circle class="joint" cx="75" cy="55" r="8"/>
-    </g>
-    <line class="bone" x1="0" y1="75" x2="-42" y2="160"/>
-    <line class="bone" x1="0" y1="75" x2="42" y2="160"/>
-  </g>
+<svg id="stage" viewBox="0 0 900 520" role="img" aria-label="Una persona recorre una cuadrícula 3 por 3 en perspectiva">
+<g id="grid"></g>
+<polyline id="routeLine" class="route"/>
+<g id="markers"></g>
+<g id="person">
+  <ellipse cx="0" cy="8" rx="24" ry="8" fill="#071019" opacity=".45"/>
+  <circle cy="-67" r="18" fill="#ffc56f"/>
+  <line class="bone" y1="-48" y2="-4"/>
+  <g id="leftArm"><line class="bone" y1="-40" x2="-22" y2="-10"/></g>
+  <g id="rightArm"><line class="bone" y1="-40" x2="22" y2="-10"/></g>
+  <g id="leftLeg"><line class="bone" y1="-5" x2="-17" y2="25"/></g>
+  <g id="rightLeg"><line class="bone" y1="-5" x2="17" y2="25"/></g>
+  <circle class="joint" cy="-5" r="5"/>
+</g>
 </svg>
 </main>
 <script>
-const state={running:true,origin:performance.now(),pausedAt:0,slowRate:.18,pulseHz:1};
-const params={bodyY:0,leftArmAngle:25,rightArmAngle:-25};
-const clocks={
-  physical:t=>t,
-  pulse:t=>Math.sin(t*Math.PI*2*state.pulseHz),
-  slow:t=>t*state.slowRate
-};
-const transitions=[
-  {source:"pulse",target:"bodyY",gain:8,offset:0},
-  {source:"pulse",target:"leftArmAngle",gain:10,offset:25},
-  {source:"pulse",target:"rightArmAngle",gain:-10,offset:-25}
-];
 const $=id=>document.getElementById(id);
-function applyTransitions(t){
-  for(const tr of transitions) params[tr.target]=clocks[tr.source](t)*tr.gain+tr.offset;
+const NS="http://www.w3.org/2000/svg";
+const corners={backLeft:[310,105],backRight:[590,105],frontLeft:[115,440],frontRight:[785,440]};
+const columns={A:1/6,B:3/6,C:5/6};
+const rows={1:1/6,2:3/6,3:5/6};
+const route=["A1","C2","A3","B1","C3"];
+const state={running:true,origin:performance.now(),pausedAt:0,secondsPerLeg:1.7,hold:.28};
+
+function mix(a,b,t){return a+(b-a)*t}
+function surfacePoint(u,v){
+  const left=[mix(corners.backLeft[0],corners.frontLeft[0],v),mix(corners.backLeft[1],corners.frontLeft[1],v)];
+  const right=[mix(corners.backRight[0],corners.frontRight[0],v),mix(corners.backRight[1],corners.frontRight[1],v)];
+  return [mix(left[0],right[0],u),mix(left[1],right[1],u)];
+}
+function cellPoint(name){return surfacePoint(columns[name[0]],rows[name[1]])}
+function add(tag,attrs,parent){
+  const node=document.createElementNS(NS,tag);
+  for(const [key,value] of Object.entries(attrs)) node.setAttribute(key,value);
+  parent.appendChild(node); return node;
+}
+function drawGrid(){
+  const grid=$("grid");
+  add("polygon",{points:[corners.backLeft,corners.backRight,corners.frontRight,corners.frontLeft].map(p=>p.join(",")).join(" "),fill:"#162638",stroke:"#8ca5bf","stroke-width":3},grid);
+  for(let i=1;i<3;i++){
+    const u=i/3,a=surfacePoint(u,0),b=surfacePoint(u,1);
+    add("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],class:"grid-line"},grid);
+    const v=i/3,c=surfacePoint(0,v),d=surfacePoint(1,v);
+    add("line",{x1:c[0],y1:c[1],x2:d[0],y2:d[1],class:"grid-line"},grid);
+  }
+  for(const col of ["A","B","C"]) for(const row of ["1","2","3"]){
+    const [x,y]=cellPoint(col+row);
+    const label=add("text",{x,y:y+7,class:"cell-label"},grid); label.textContent=col+row;
+  }
+  $("routeLine").setAttribute("points",route.map(cellPoint).map(p=>p.join(",")).join(" "));
+  route.forEach((name,i)=>{
+    const [x,y]=cellPoint(name);
+    const g=add("g",{"data-step":i},$("markers"));
+    add("circle",{cx:x,cy:y,r:10,class:"marker"},g);
+  });
+}
+function smooth(t){return t*t*(3-2*t)}
+function positionAt(t){
+  const unit=state.secondsPerLeg+state.hold;
+  const total=(route.length-1)*unit;
+  const local=Math.min(t,total);
+  const leg=Math.min(route.length-2,Math.floor(local/unit));
+  const within=local-leg*unit;
+  const progress=smooth(Math.min(1,within/state.secondsPerLeg));
+  const a=cellPoint(route[leg]),b=cellPoint(route[leg+1]);
+  return {x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress),leg,progress,done:t>=total};
 }
 function render(t){
-  applyTransitions(t);
-  $("actor").setAttribute("transform",`translate(400 ${225+params.bodyY})`);
-  $("leftArm").setAttribute("transform",`translate(0 -30) rotate(${params.leftArmAngle})`);
-  $("rightArm").setAttribute("transform",`translate(0 -30) rotate(${params.rightArmAngle})`);
-  $("clock").value=`physical ${t.toFixed(2)} · pulse ${clocks.pulse(t).toFixed(2)} · slow ${clocks.slow(t).toFixed(2)}`;
+  const p=positionAt(t);
+  const moving=p.progress>0&&p.progress<1;
+  const pulse=moving?Math.sin(t*Math.PI*4):0;
+  $("person").setAttribute("transform",`translate(${p.x} ${p.y})`);
+  $("leftArm").setAttribute("transform",`rotate(${pulse*18} 0 -40)`);
+  $("rightArm").setAttribute("transform",`rotate(${-pulse*18} 0 -40)`);
+  $("leftLeg").setAttribute("transform",`rotate(${-pulse*22} 0 -5)`);
+  $("rightLeg").setAttribute("transform",`rotate(${pulse*22} 0 -5)`);
+  document.querySelectorAll("[data-step]").forEach((node,i)=>node.firstElementChild.classList.toggle("active",i<=p.leg+(p.progress===1?1:0)));
+  if(p.done){state.running=false;$("toggle").textContent="Continuar"}
 }
 function frame(now){
-  if(state.running){
-    const t=(now-state.origin)/1000;
-    state.pausedAt=t; render(t);
-  }
+  if(state.running){state.pausedAt=(now-state.origin)/1000;render(state.pausedAt)}
   requestAnimationFrame(frame);
 }
 $("toggle").onclick=()=>{
@@ -77,8 +118,8 @@ $("toggle").onclick=()=>{
   if(state.running){state.origin=performance.now()-state.pausedAt*1000;$("toggle").textContent="Pausa"}
   else $("toggle").textContent="Continuar";
 };
-$("reset").onclick=()=>{state.origin=performance.now();state.pausedAt=0;render(0)};
-render(0);requestAnimationFrame(frame);
+$("restart").onclick=()=>{state.origin=performance.now();state.pausedAt=0;state.running=true;$("toggle").textContent="Pausa";render(0)};
+drawGrid();render(0);requestAnimationFrame(frame);
 </script>
 </body>
 </html>
