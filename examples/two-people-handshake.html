@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ejemplo — Dos personas se dan la mano</title>
+<style>
+body{margin:0;background:#101722;color:#eef4ff;font:15px system-ui,sans-serif}
+header{padding:.8rem 1rem;background:#192536} button{padding:.5rem .9rem;border:0;border-radius:.5rem}
+svg{display:block;width:100%;height:calc(100vh - 58px);min-height:420px}
+.bone{stroke:#edf5ff;stroke-width:12;stroke-linecap:round}.joint{fill:#64d8ff}
+</style>
+</head>
+<body>
+<header><button id="replay">Repetir saludo</button></header>
+<svg viewBox="0 0 900 500" role="img" aria-label="Dos figuras geométricas se acercan y se dan la mano">
+<line x1="0" y1="420" x2="900" y2="420" stroke="#314155" stroke-width="3"/>
+<g id="a" transform="translate(250 250)">
+ <circle cy="-90" r="38" fill="#ffc56f"/><line class="bone" y1="-50" y2="80"/>
+ <g id="armA" transform="translate(0 -25) rotate(-10)"><line class="bone" x2="110" y2="35"/><circle class="joint" cx="110" cy="35" r="9"/></g>
+ <line class="bone" y1="80" x2="-38" y2="165"/><line class="bone" y1="80" x2="38" y2="165"/>
+</g>
+<g id="b" transform="translate(650 250)">
+ <circle cy="-90" r="38" fill="#ff8da1"/><line class="bone" y1="-50" y2="80"/>
+ <g id="armB" transform="translate(0 -25) rotate(10)"><line class="bone" x2="-110" y2="35"/><circle class="joint" cx="-110" cy="35" r="9"/></g>
+ <line class="bone" y1="80" x2="-38" y2="165"/><line class="bone" y1="80" x2="38" y2="165"/>
+</g>
+</svg>
+<script>
+let origin=performance.now();
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const smooth=x=>x*x*(3-2*x);
+function frame(now){
+ const physical=(now-origin)/1000;
+ const approach=smooth(clamp(physical/1.4,0,1));
+ const pulse=Math.sin(Math.max(0,physical-1.4)*Math.PI*4)*Math.exp(-Math.max(0,physical-1.4)*2.2);
+ const gap=90*approach;
+ document.querySelector("#a").setAttribute("transform",`translate(${250+gap} 250)`);
+ document.querySelector("#b").setAttribute("transform",`translate(${650-gap} 250)`);
+ document.querySelector("#armA").setAttribute("transform",`translate(0 -25) rotate(${-10+18*approach+4*pulse})`);
+ document.querySelector("#armB").setAttribute("transform",`translate(0 -25) rotate(${10-18*approach-4*pulse})`);
+ requestAnimationFrame(frame);
+}
+document.querySelector("#replay").onclick=()=>origin=performance.now();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
