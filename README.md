@@ -6,7 +6,7 @@ Motor incremental de animación basado en HTML, SVG y JavaScript, sin dependenci
 
 | Ejemplo | Ejecutar | Código |
 |---|---|---|
-| Cuatro caballos secuenciales y un beat de pausa | [▶ Ver animación](https://htmlpreview.github.io/?https://github.com/norbymezz/norbertachatelli/blob/main/examples/two-fixed-knights-perspective.html) | [Ver código](examples/two-fixed-knights-perspective.html) |
+| Turnos alternados con dos caballos por jugador | [▶ Ver animación](https://htmlpreview.github.io/?https://github.com/norbymezz/norbertachatelli/blob/main/examples/two-fixed-knights-perspective.html) | [Ver código](examples/two-fixed-knights-perspective.html) |
 | Persona recorriendo una cuadrícula 3×3 | [▶ Ver animación](https://htmlpreview.github.io/?https://github.com/norbymezz/norbertachatelli/blob/main/examples/perspective-grid-route.html) | [Ver código](examples/perspective-grid-route.html) |
 | Dos personas dándose la mano | [▶ Ver animación](https://htmlpreview.github.io/?https://github.com/norbymezz/norbertachatelli/blob/main/examples/two-people-handshake.html) | [Ver código](examples/two-people-handshake.html) |
 
