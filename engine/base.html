@@ -22,15 +22,14 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 .board-edge{fill:#221b16;stroke:#b88d57;stroke-width:5}
 .label{fill:#cbd7e4;font-size:15px;font-weight:700;text-anchor:middle}
 .shadow{fill:#05080d;opacity:.35}
-.piece{color:#f7f1e3}
-.dark-piece{color:#151a24;filter:drop-shadow(0 0 1.6px #79d8ff)}
-.light-piece{color:#fff8e8;filter:drop-shadow(0 0 1.6px #263446)}
+.piece{color:#fff}
+.dark-piece{color:#050505;filter:drop-shadow(0 0 1.5px #dfe7f1)}
+.light-piece{color:#fff;filter:drop-shadow(0 0 1.5px #202734)}
 .piece .horse-line{fill:none;stroke:currentColor;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
 .piece .horse-detail{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round}
-.piece .horse-node{fill:currentColor;stroke:#79d8ff;stroke-width:1.6}
-.light-piece .horse-node{stroke:#8c7658}
-.piece .eye{fill:#ffd166;stroke:#17202b;stroke-width:1}
-.piece .nostril{fill:#79d8ff}
+.piece .horse-node,.piece .eye,.piece .nostril{fill:currentColor;stroke-width:2}
+.dark-piece .horse-node,.dark-piece .eye,.dark-piece .nostril{stroke:#e8eef6}
+.light-piece .horse-node,.light-piece .eye,.light-piece .nostril{stroke:#202734}
 .route-dark,.route-light{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:7 8;opacity:.55}
 .route-dark{stroke:#66d3ff}.route-light{stroke:#fff0be}
 </style>
@@ -40,7 +39,7 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <header>
 <button id="toggle">Pausa</button>
 <button id="restart">Reiniciar</button>
-<span class="note">Blanco B1 → Negro B8 → Blanco G1 → Negro G8 → pausa</span>
+<span class="note">Todos comienzan hacia la derecha · luego rebotan</span>
 <output id="turnLabel">Turno blancas</output>
 <div class="clock-panel">
   <div id="ticks"></div>
@@ -102,10 +101,12 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 const $=id=>document.getElementById(id);
 const NS="http://www.w3.org/2000/svg";
 const corners={backLeft:[330,90],backRight:[630,90],frontLeft:[70,500],frontRight:[890,500]};
-const lightPath=["B1","C3","D5","F4","H5"];
-const darkPath=["B8","C6","D4","F5","H4"];
-const lightPath2=["G1","F3","E5","C4","A5"];
-const darkPath2=["G8","F6","E4","C5","A4"];
+// Caballos izquierdos: 2 a la derecha + 1 hacia adelante; luego rebotan.
+const lightPath=["B1","D2","F3","H4","F5","D6","B7"];
+const darkPath=["B8","D7","F6","H5","F4","D3","B2"];
+// Caballos derechos: 1 a la derecha + 2 hacia adelante; luego 1 a la izquierda + 2 hacia adelante.
+const lightPath2=["G1","H3","G5","H7","F8"];
+const darkPath2=["G8","H6","G4","H2","F1"];
 const state={running:true,origin:performance.now(),pausedAt:0,tickDuration:.8,moveDuration:.55};
 
 function mix(a,b,t){return a+(b-a)*t}
