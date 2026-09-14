@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tres orientaciones discutiendo — Cartoon Engine</title>
+<style>
+:root{color-scheme:dark;--a:#ff6257;--b:#ffd15c;--c:#62bcff;--bg:#090c12}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:#f5f2e9;font:15px system-ui,sans-serif}
+main{width:min(980px,100%);padding:16px}.stage{overflow:hidden;border:1px solid #2e3544;border-radius:22px;background:radial-gradient(circle at 50% 38%,#252c39,#111620 62%,#0a0d13)}
+svg{display:block;width:100%;height:auto}.face{fill:none;stroke:currentColor;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;transform-box:fill-box;transform-origin:center;transition:transform .18s ease}
+.front{color:var(--a)}.threequarter{color:var(--b)}.backprofile{color:var(--c)}
+.node{fill:#10141c;stroke:currentColor;stroke-width:5}.eye{fill:currentColor}.hidden{opacity:.3;stroke-dasharray:5 9}.mouth,.jaw,.brow{transform-box:fill-box;transform-origin:center;transition:transform .15s ease}
+.speaker{transform:translateY(-6px) rotate(-1.4deg)}.speaker .jaw{transform:translateY(8px)}.speaker .mouth{animation:talk .24s steps(2,end) infinite}.speaker .brow{transform:translateY(-5px) rotate(-7deg)}
+.sound{opacity:0;transition:opacity .12s;stroke:currentColor;stroke-width:5;stroke-linecap:round}.speaker .sound{opacity:1;animation:sound .42s ease-in-out infinite alternate}
+@keyframes talk{50%{transform:scaleY(2)}}@keyframes sound{to{opacity:.3}}
+.clock{display:flex;justify-content:center;gap:9px;padding:13px 10px 5px}.beat{width:13px;height:13px;border-radius:50%;border:2px solid #596174;background:#303746}.beat.on{background:#fff;border-color:#fff;box-shadow:0 0 13px #fff9}
+.label{text-align:center;min-height:23px;color:#cbd2de}.controls{display:flex;justify-content:center;gap:9px;padding:12px}button{color:#f5f2e9;background:#1a202b;border:1px solid #3a4354;border-radius:999px;padding:8px 15px;cursor:pointer}
+.caption{fill:#9da7b8;font:600 14px system-ui,sans-serif;letter-spacing:.08em;text-anchor:middle}
+@media(prefers-reduced-motion:reduce){.mouth,.sound{animation:none!important}}
+</style>
+</head>
+<body><main><section class="stage" aria-label="Tres rostros con distintas orientaciones discutiendo">
+<svg viewBox="0 0 960 520" role="img" aria-labelledby="title desc">
+<title id="title">Un rostro de frente, uno de medio perfil y otro casi de espaldas discutiendo</title>
+<desc id="desc">Tres cabezas geométricas alternan sus intervenciones siguiendo un clock de seis pulsos.</desc>
+<path d="M320 90V440M640 90V440" stroke="#303746" stroke-width="2" stroke-dasharray="5 12"/>
+
+<g id="front" class="face front">
+ <text class="caption" x="170" y="80">FRENTE</text>
+ <path d="M94 365Q67 292 85 205Q105 119 170 112Q235 119 255 205Q273 292 246 365Q217 405 170 408Q123 405 94 365"/>
+ <path d="M170 186v78l-18 16h36"/>
+ <circle class="eye" cx="130" cy="211" r="7"/><circle class="eye" cx="210" cy="211" r="7"/>
+ <path class="brow" d="M109 188l38-4M193 184l38 4"/>
+ <g class="jaw"><path d="M117 329Q170 365 223 329"/></g><g class="mouth"><path d="M137 321Q170 310 203 321"/></g>
+ <circle class="node" cx="170" cy="321" r="8"/>
+ <g class="sound"><path d="M99 303l-26 7M241 303l26 7"/></g>
+</g>
+
+<g id="threequarter" class="face threequarter">
+ <text class="caption" x="480" y="80">MEDIO PERFIL</text>
+ <path d="M382 365Q358 291 379 197Q400 119 472 111Q542 115 575 184Q588 217 574 245"/>
+ <path d="M574 245l29 25-35 13"/>
+ <g class="jaw"><path d="M568 283Q590 309 563 326Q552 380 486 405Q424 406 382 365"/></g>
+ <path d="M492 191l9 73-18 17h26"/>
+ <circle class="eye hidden" cx="440" cy="210" r="6"/><circle class="eye" cx="530" cy="209" r="8"/>
+ <path class="brow" d="M505 183q31-10 55 5"/>
+ <g class="mouth"><path d="M539 305q29 12 48-2"/></g><circle class="node" cx="568" cy="283" r="8"/>
+ <g class="sound"><path d="M615 278h25M614 298l30 10"/></g>
+</g>
+
+<g id="backprofile" class="face backprofile">
+ <text class="caption" x="790" y="80">CASI DE ESPALDAS</text>
+ <path d="M683 363Q650 282 680 187Q711 111 793 109Q865 114 889 189Q908 253 885 336Q865 392 803 410Q731 407 683 363"/>
+ <path d="M698 190Q752 145 823 161Q861 171 883 206"/>
+ <path d="M714 212q-18 62 7 118" class="hidden"/>
+ <path d="M847 181q30 5 38 28q-5 39-31 42q-23-9-13-35q11-17 27-4"/>
+ <circle class="eye" cx="822" cy="222" r="6"/>
+ <path class="brow" d="M801 198q22-9 39 2"/>
+ <g class="jaw"><path d="M835 282q30 32 12 63q-17 29-44 46"/></g>
+ <g class="mouth"><path d="M842 288q20 8 31-5"/></g><circle class="node" cx="842" cy="288" r="8"/>
+ <g class="sound"><path d="M885 278h24M885 299l27 8"/></g>
+</g>
+</svg>
+<div class="clock" aria-label="Clock de seis pulsos"><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i><i class="beat"></i></div>
+<div id="label" class="label" aria-live="polite">Comienza la discusión</div>
+<div class="controls"><button id="toggle">Pausar</button><button id="restart">Reiniciar</button></div>
+</section></main>
+<script>
+(()=>{const faces={front:document.querySelector('#front'),threequarter:document.querySelector('#threequarter'),backprofile:document.querySelector('#backprofile')};
+const dots=[...document.querySelectorAll('.beat')],label=document.querySelector('#label'),toggle=document.querySelector('#toggle'),restart=document.querySelector('#restart');
+const states=[
+{who:['front'],text:'Habla el rostro de frente'},
+{who:['threequarter'],text:'Responde el rostro de medio perfil'},
+{who:['backprofile'],text:'Interviene el rostro casi de espaldas'},
+{who:['front','threequarter'],text:'El frente y el medio perfil se superponen'},
+{who:['backprofile'],text:'El rostro girado insiste'},
+{who:[],text:'Pausa antes de recomenzar'}];
+let beat=-1,timer,running=true;
+function render(){const s=states[beat];Object.entries(faces).forEach(([id,el])=>el.classList.toggle('speaker',s.who.includes(id)));dots.forEach((d,i)=>d.classList.toggle('on',i===beat));label.textContent='Clock '+(beat+1)+'/6 · '+s.text}
+function step(){beat=(beat+1)%states.length;render()}function start(){clearInterval(timer);timer=setInterval(step,950)}
+toggle.onclick=()=>{running=!running;toggle.textContent=running?'Pausar':'Continuar';running?start():clearInterval(timer)};
+restart.onclick=()=>{beat=-1;step();if(running)start()};step();start()})();
+</script></body></html>
