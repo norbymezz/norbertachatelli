@@ -37,7 +37,7 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <header>
 <button id="toggle">Pausa</button>
 <button id="restart">Reiniciar</button>
-<span class="note">El oscuro se mueve en 4 · el claro en 8</span>
+<span class="note">Negro 1 → Negro 2 → Blanco 1 → Blanco 2 → pausa</span>
 <div class="clock-panel">
   <div id="ticks"></div>
   <output id="clockCount">1</output>
@@ -120,27 +120,27 @@ function pingPongPoint(path,index){
  const phase=((index%(span*2))+(span*2))%(span*2);
  return cellPoint(path[phase<=span?phase:span*2-phase]);
 }
-function clockDrivenPosition(path,t,eventTick){
+function clockDrivenPosition(path,t,eventBeat){
  const d=state.tickDuration;
- const firstStart=(eventTick-1)*d;
+ const firstStart=(eventBeat-1)*d;
  if(t<firstStart){const [x,y]=pingPongPoint(path,0);return{x,y}}
- const eventIndex=Math.floor((t-firstStart)/(8*d));
- const eventStart=firstStart+eventIndex*8*d;
+ const eventIndex=Math.floor((t-firstStart)/(5*d));
+ const eventStart=firstStart+eventIndex*5*d;
  const progress=smooth(clamp((t-eventStart)/state.moveDuration,0,1));
  const a=pingPongPoint(path,eventIndex),b=pingPongPoint(path,eventIndex+1);
  return{x:mix(a[0],b[0],progress),y:mix(a[1],b[1],progress)};
 }
 function updateClock(t){
- const count=Math.floor(t/state.tickDuration)%8+1;
+ const count=Math.floor(t/state.tickDuration)%5+1;
  $("clockCount").value=count;
  document.querySelectorAll(".tick").forEach((node,i)=>node.classList.toggle("on",i+1===count));
 }
 function render(t){
  updateClock(t);
- const dark=clockDrivenPosition(darkPath,t,4);
- const dark2=clockDrivenPosition(darkPath2,t,4);
- const light=clockDrivenPosition(lightPath,t,8);
- const light2=clockDrivenPosition(lightPath2,t,8);
+ const dark=clockDrivenPosition(darkPath,t,1);
+ const dark2=clockDrivenPosition(darkPath2,t,2);
+ const light=clockDrivenPosition(lightPath,t,3);
+ const light2=clockDrivenPosition(lightPath2,t,4);
  // Invariante: los cuatro transforms contienen solamente traslación.
  $("darkKnight").setAttribute("transform",`translate(${dark.x} ${dark.y})`);
  $("darkKnight2").setAttribute("transform",`translate(${dark2.x} ${dark2.y})`);
@@ -157,7 +157,7 @@ $("toggle").onclick=()=>{
  else $("toggle").textContent="Continuar";
 };
 $("restart").onclick=()=>{state.origin=performance.now();state.pausedAt=0;state.running=true;$("toggle").textContent="Pausa";render(0)};
-for(let i=1;i<=8;i++){const node=add("span",{class:"tick"},$("ticks"));node.textContent=i}
+for(let i=1;i<=5;i++){const node=add("span",{class:"tick"},$("ticks"));node.textContent=i===5?"—":i}
 drawBoard();render(0);requestAnimationFrame(frame);
 </script>
 </body>
