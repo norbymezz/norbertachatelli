@@ -55,23 +55,41 @@ svg{width:100%;height:100%;min-height:500px;background:linear-gradient(#203149 0
 <polyline id="lightRoute2" class="route-light"/>
 <defs>
   <g id="knightProfile">
-    <ellipse class="shadow" cx="0" cy="16" rx="36" ry="9"/>
-    <path class="horse-line" d="M-31 12 H34 M-26 10 Q-13 0-18-25 Q-22-42-10-57 L-14-73 L1-62 L11-77 L17-57 Q29-51 40-36 L49-28 L43-20 L29-15 Q19-8 27 3 L33 12"/>
-    <path class="horse-detail" d="M-11-55 Q-28-42-18-25 M29-15 Q37-17 43-20"/>
-    <circle class="horse-node" cx="-31" cy="12" r="4"/>
-    <circle class="horse-node" cx="-18" cy="-25" r="4"/>
-    <circle class="horse-node" cx="-10" cy="-57" r="4"/>
-    <circle class="horse-node" cx="1" cy="-62" r="4"/>
-    <circle class="horse-node" cx="11" cy="-77" r="4"/>
-    <circle class="horse-node" cx="17" cy="-57" r="4"/>
-    <circle class="horse-node" cx="40" cy="-36" r="4"/>
-    <circle class="horse-node" cx="49" cy="-28" r="4"/>
-    <circle class="horse-node" cx="43" cy="-20" r="4"/>
-    <circle class="horse-node" cx="29" cy="-15" r="4"/>
-    <circle class="horse-node" cx="27" cy="3" r="4"/>
-    <circle class="horse-node" cx="34" cy="12" r="4"/>
-    <circle class="eye" cx="16" cy="-48" r="3.6"/>
-    <circle class="nostril" cx="42" cy="-27" r="2.5"/>
+    <ellipse class="shadow" cx="0" cy="22" rx="43" ry="8"/>
+
+    <!-- Tronco: cadera y hombro -->
+    <path class="horse-line" d="M-24-24 L19-24"/>
+
+    <!-- Cuello, cabeza, hocico y oreja -->
+    <path class="horse-line" d="M19-24 L31-49 L47-55 L58-48 L47-39 L31-40 L19-24"/>
+    <path class="horse-detail" d="M37-53 L39-67 L47-55"/>
+
+    <!-- Cola -->
+    <path class="horse-line" d="M-24-24 L-43-35 L-54-27"/>
+
+    <!-- Dos patas traseras -->
+    <path class="horse-line" d="M-24-24 L-28-1 L-31 21 M-13-24 L-10 0 L-8 21"/>
+
+    <!-- Dos patas delanteras -->
+    <path class="horse-line" d="M10-24 L8 0 L7 21 M19-24 L25-1 L29 21"/>
+
+    <!-- Puntos estructurales, como articulaciones de una persona -->
+    <circle class="horse-node" cx="-24" cy="-24" r="6"/>
+    <circle class="horse-node" cx="19" cy="-24" r="6"/>
+    <circle class="horse-node" cx="31" cy="-49" r="6"/>
+    <circle class="horse-node" cx="47" cy="-55" r="7"/>
+    <circle class="horse-node" cx="58" cy="-48" r="5"/>
+    <circle class="horse-node" cx="-28" cy="-1" r="5"/>
+    <circle class="horse-node" cx="-31" cy="21" r="5"/>
+    <circle class="horse-node" cx="-10" cy="0" r="5"/>
+    <circle class="horse-node" cx="-8" cy="21" r="5"/>
+    <circle class="horse-node" cx="8" cy="0" r="5"/>
+    <circle class="horse-node" cx="7" cy="21" r="5"/>
+    <circle class="horse-node" cx="25" cy="-1" r="5"/>
+    <circle class="horse-node" cx="29" cy="21" r="5"/>
+    <circle class="horse-node" cx="-43" cy="-35" r="4.5"/>
+    <circle class="eye" cx="49" cy="-57" r="2.8"/>
+    <circle class="nostril" cx="57" cy="-48" r="2"/>
   </g>
 </defs>
 <g id="darkKnight" class="piece dark-piece"><use href="#knightProfile"/></g>
